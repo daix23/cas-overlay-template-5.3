@@ -1,0 +1,9 @@
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^http://112.124.113.167:8080/RCComplat",
+  "name" : "RCComplat",
+  "theme" : "apereo",
+  "id" : 10000002,
+  "description" : "RCComplat service",
+  "evaluationOrder" : 1
+}

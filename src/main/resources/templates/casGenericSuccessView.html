@@ -7,9 +7,33 @@
 
     <title th:text="#{screen.success.header}">Generic Success View</title>
     <link href="../../static/css/cas.css" rel="stylesheet" th:remove="tag" />
+    <script th:inline="javascript">
+        function get_cookie(Name) {
+            var search = Name + "="//查询检索的值
+            var returnvalue = "";//返回值
+            if (document.cookie.length > 0) {
+                sd = document.cookie.indexOf(search);
+                if (sd!= -1) {
+                    sd += search.length;
+                    end = document.cookie.indexOf(";", sd);
+                    if (end == -1)
+                        end = document.cookie.length;
+                    //unescape() 函数可对通过 escape() 编码的字符串进行解码。
+                    returnvalue=unescape(document.cookie.substring(sd, end))
+                }
+            }
+            return returnvalue;
+        }
+        function setServersTGT() {
+            var tgt = get_cookie("TGC");
+            console.log("TGT:"+tgt);
+            document.getElementById("RCComplat").setAttribute("href","http://112.124.113.167:8080/RCComplat?TGT="+tgt);
+            document.getElementById("MapConfigOL").setAttribute("href","http://126.33.50.237:8080/MapConfigOL?TGT="+tgt);
+        }
+    </script>
 </head>
 
-<body>
+<body onload="setServersTGT()">
 <main role="main" class="container mt-3 mb-3">
     <div layout:fragment="content" class="row">
         <div class="alert alert-success">

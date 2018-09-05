@@ -14,13 +14,13 @@
         <div class="col-md">
             <!-- Login form template begins here -->
             <div th:fragment="loginform" class="card">
-                <div class="card-header text-center">
+                <!--<div class="card-header text-center">
                     <h2 th:text="#{cas.login.pagetitle}">Login</h2>
                     <span class="fa-stack fa-2x hidden-xs">
                       <i class="fa fa-circle fa-stack-2x"></i>
                       <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
                     </span>
-                </div>
+                </div>-->
                 <div class="card-body">
                     <form method="post" id="fm1" th:object="${credential}" action="login">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
@@ -83,12 +83,12 @@
                             </p>
                         </section>
 
-                      <!--  <section class="form-check">
+                        <section class="form-check">
                             <p>
                                 <input type="checkbox" name="rememberMe" id="rememberMe" value="true" tabindex="5"/>
                                 <label for="rememberMe" th:text="#{screen.rememberme.checkbox.title}"></label>
                             </p>
-                        </section>-->
+                        </section>
 
                         <section class="row" th:if="${recaptchaSiteKey != null AND recaptchaInvisible != null AND recaptchaSiteKey AND !recaptchaInvisible}">
                             <div class="g-recaptcha" th:attr="data-sitekey=${recaptchaSiteKey}"/>
@@ -144,7 +144,7 @@
                         });
                     </script>
 
-                    <div th:replace="fragments/loginsidebar :: loginsidebar" />
+                    <!--<div th:replace="fragments/loginsidebar :: loginsidebar" />-->
                 </div>
             </div>
         </div>

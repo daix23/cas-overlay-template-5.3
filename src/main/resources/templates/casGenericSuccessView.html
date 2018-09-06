@@ -27,8 +27,9 @@
         function setServersTGT() {
             var tgt = get_cookie("TGC");
             console.log("TGT:"+tgt);
-            document.getElementById("RCComplat").setAttribute("href","http://112.124.113.167:8080/RCComplat?TGT="+tgt);
+            document.getElementById("RCComplat").setAttribute("href","http://126.33.50.237:8080/RCComplat?TGT="+tgt);
             document.getElementById("MapConfigOL").setAttribute("href","http://126.33.50.237:8080/MapConfigOL?TGT="+tgt);
+            document.getElementById("press-viewer").setAttribute("href","http://126.33.50.237:8080/press-viewer/map/index.do?pageId=mapPage#?TGT="+tgt);
         }
     </script>
 </head>

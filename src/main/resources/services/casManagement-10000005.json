@@ -1,0 +1,9 @@
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^http://126.33.10.60:8080/cas-management",
+  "name" : "casManagement",
+  "theme" : "apereo",
+  "id" : 10000005,
+  "description" : "casManagement service",
+  "evaluationOrder" : 1
+}

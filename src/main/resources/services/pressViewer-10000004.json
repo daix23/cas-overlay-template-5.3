@@ -1,9 +1,9 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
   "serviceId" : "^http://126.33.50.237:8080/press-viewer",
-  "name" : "press-viewer",
+  "name" : "pressViewer",
   "theme" : "apereo",
   "id" : 10000004,
-  "description" : "press-viewer service",
+  "description" : "pressViewer service",
   "evaluationOrder" : 1
 }

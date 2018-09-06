@@ -3,7 +3,7 @@
   "serviceId" : "^http://126.33.50.237:8080/press-viewer",
   "name" : "press-viewer",
   "theme" : "apereo",
-  "id" : 10000003,
+  "id" : 10000004,
   "description" : "press-viewer service",
   "evaluationOrder" : 1
 }

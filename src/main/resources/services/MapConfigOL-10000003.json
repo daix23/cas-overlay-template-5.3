@@ -1,6 +1,6 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^http://126.33.50.237:8080/MapConfigOL",
+  "serviceId" : "^http://126.33.10.220:8080/MapConfigOL",
   "name" : "MapConfigOL",
   "theme" : "apereo",
   "id" : 10000003,

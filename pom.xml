@@ -76,6 +76,11 @@
             <artifactId>cas-overlay</artifactId>
             <version>1.0</version>
         </dependency>
+        <!--<dependency>
+            <groupId>org.apereo.cas</groupId>
+            <artifactId>cas-server-core-authentication-api</artifactId>
+            <version>5.3.2</version>
+        </dependency>-->
     </dependencies>
 
     <properties>
@@ -172,6 +177,17 @@
                 <!--<dependency>
                     <groupId>org.apereo.cas</groupId>
                     <artifactId>cas-server-support-json-service-registry</artifactId>
+                    <version>${cas.version}</version>
+                </dependency>-->
+                <!-- restful -->
+                <dependency>
+                    <groupId>org.apereo.cas</groupId>
+                    <artifactId>cas-server-support-rest</artifactId>
+                    <version>${cas.version}</version>
+                </dependency>
+                <!--<dependency>
+                    <groupId>org.apereo.cas</groupId>
+                    <artifactId>cas-server-core-authentication-api</artifactId>
                     <version>${cas.version}</version>
                 </dependency>-->
             </dependencies>

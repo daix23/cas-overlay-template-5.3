@@ -13,7 +13,7 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output url="file://$MODULE_DIR$/target/classes" />
+    <output url="file://$MODULE_DIR$/target/cas/WEB-INF/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
@@ -150,12 +150,10 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.microsoft.sqlserver:mssql-jdbc:6.4.0.jre8" level="project" />
     <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-support-jdbc:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-authentication-api:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-services:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-ticket:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-authentication:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-protocol:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-events:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-validation:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-services:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-ticket:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-authentication:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-events:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-authentication-mfa:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.groovy:groovy-jsr223:2.4.15" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.groovy:groovy:2.4.15" level="project" />
@@ -178,13 +176,13 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.papertrail:profiler:1.0.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.ryantenney.metrics:metrics-spring:3.1.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-configuration-api:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-configuration:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-configuration-model:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.springframework.boot:spring-boot-configuration-processor:1.5.14.RELEASE" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.json:json:20160810" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.springframework.boot:spring-boot-configuration-metadata:1.5.14.RELEASE" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: com.github.javaparser:javaparser-core:3.6.5" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-webflow:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-configuration:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-configuration-model:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:1.5.14.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.json:json:20160810" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-metadata:1.5.14.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: com.github.javaparser:javaparser-core:3.6.5" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-webflow:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.mongodb:mongo-java-driver:3.6.3" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jasypt:jasypt:1.9.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.bouncycastle:bcpkix-jdk15on:1.59" level="project" />
@@ -192,7 +190,7 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.bouncycastle:bcprov-jdk15on:1.59" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-util-api:5.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.bitbucket.b_c:jose4j:0.6.3" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-web:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-web:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.pac4j:pac4j-cas:3.0.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jasig.cas.client:cas-client-support-saml:3.5.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.pac4j:pac4j-config:3.0.1" level="project" />
@@ -247,17 +245,26 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.unbescape:unbescape:1.1.5.RELEASE" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.springframework.boot:spring-boot-starter-thymeleaf:1.5.14.RELEASE" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-tickets-api:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-logout:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-logout:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jasig.cas.client:cas-client-core:3.5.0" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services-authentication:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-web-api:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-security-filter:2.0.10.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api-audit:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-api:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services-api:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services-registry:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-authentication-attributes:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-support-redis-core:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-support-rest:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-throttle:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-protocol:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-validation:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-audit:5.3.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-support-throttle-core:5.3.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services-authentication:5.3.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-authentication:5.3.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-tickets:5.3.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-util:5.3.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-rest:5.3.2" level="project" />
   </component>
 </module>

@@ -25,12 +25,18 @@
             return returnvalue;
         }
         function setServersTGT() {
-            var tgt = get_cookie("TGC");
-            console.log("TGT:"+tgt);
-            document.getElementById("RCComplat").setAttribute("href","http://126.33.50.237:8080/RCComplat?TGT="+tgt);
-            document.getElementById("MapConfigOL").setAttribute("href","http://126.33.10.220:8080/MapConfigOL/index.jsp?TGT="+tgt);
-            document.getElementById("press-viewer").setAttribute("href","http://126.33.10.220:8181/press-viewer/map/index.do?pageId=mapPage#?TGT="+tgt);
-            document.getElementById("services-management").setAttribute("href","http://126.33.50.237:8809/cas-management/services/default?TGT="+tgt);
+            var tgc = get_cookie("TGC");
+            console.log("TGC:"+tgc);
+            var path = "http://126.33.50.237:8080/cas/login?service=";
+            //document.getElementById("RCComplat").setAttribute("href",path+"http%3a%2f%2f126.33.50.237%3a8080%2fRCComplat");
+            //document.getElementById("MapConfigOL").setAttribute("href",path+"http%3a%2f%2f126.33.10.220%3a8080%2fMapConfigOL%2findex.jsp");
+            //document.getElementById("press-viewer").setAttribute("href",path+"http%3a%2f%2f126.33.10.220%3a8181%2fpress-viewer%2fmap%2findex.do%3fpageId%3dmapPage%23");
+            //document.getElementById("services-management").setAttribute("href",path+"http%3a%2f%2f126.33.50.237%3a8809%2fcas-management%2fservices%2fdefault");
+            document.getElementById("RCComplat").setAttribute("href","http://126.33.50.237:8080/RCComplat?ticket="+tgc);
+            document.getElementById("MapConfigOL").setAttribute("href","http://126.33.10.220:8080/MapConfigOL/index.jsp?ticket="+tgc);
+            document.getElementById("press-viewer").setAttribute("href","http://126.33.10.220:8181/press-viewer/map/index.do?pageId=mapPage#?ticket="+tgc);
+            document.getElementById("services-management").setAttribute("href","http://126.33.50.237:8809/cas-management/services/default?ticket="+tgc);
+
         }
     </script>
 </head>

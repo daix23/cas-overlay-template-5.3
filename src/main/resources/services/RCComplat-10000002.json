@@ -5,5 +5,8 @@
   "theme" : "apereo",
   "id" : 10000002,
   "description" : "RCComplat service",
-  "evaluationOrder" : 1
+  "evaluationOrder" : 1,
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  }
 }

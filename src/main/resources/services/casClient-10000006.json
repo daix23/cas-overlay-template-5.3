@@ -1,0 +1,12 @@
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^http://126.33.50.237:8080/casClient",
+  "name" : "casClient",
+  "theme" : "apereo",
+  "id" : 10000006,
+  "description" : "casClient service",
+  "evaluationOrder" : 1,
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  }
+}

@@ -192,6 +192,23 @@
                     <artifactId>cas-server-support-rest</artifactId>
                     <version>${cas.version}</version>
                 </dependency>
+                <!--captcha start-->
+                <dependency>
+                    <groupId>org.apereo.cas</groupId>
+                    <artifactId>cas-server-core-authentication-api</artifactId>
+                    <version>${cas.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apereo.cas</groupId>
+                    <artifactId>cas-server-core-webflow-api</artifactId>
+                    <version>${cas.version}</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.apereo.cas</groupId>
+                    <artifactId>cas-server-core-webflow</artifactId>
+                    <version>${cas.version}</version>
+                </dependency>
+                <!--captcha end-->
                 <!--<dependency>
                     <groupId>org.jasig.cas.client</groupId>
                     <artifactId>cas-client-core</artifactId>

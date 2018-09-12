@@ -24,6 +24,16 @@ function loadjQueryUI() {
 	head.load(jqueryUrl, loadjQueryCookies);
 }
 
+
+function changeCaptcha(){
+    $("#Captcha").val('');
+    var rmd = Math.random();
+    var codeSrc = /*[[@{/captcha}]]*/;
+    $("#captchaCode").attr('src',codeSrc+'?rmd='+rmd);
+    //$("#captchaCode").attr('src',"/cas/captcha?rmd="+rmd);
+}
+
+
 function loadjQueryCookies() {
 	var jqueryUrl = /*[[@{#{webjars.jquerycookie.js}}]]*/; 
 	head.load(jqueryUrl, notifyResourcesAreLoaded(resourceLoadedSuccessfully));

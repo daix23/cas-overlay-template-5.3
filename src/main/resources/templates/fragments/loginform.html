@@ -74,7 +74,20 @@
                             </span>
                             </div>
                         </section>
-
+                        <section class="form-group">
+                            <label for="captcha" th:utext="#{screen.welcome.label.captcha}">captcha</label>
+                            <!--th:field="*{captcha}"-->
+                            <div>
+                                <input class="form-control required" style="float: left;width: 75%;"
+                                       id="captcha"
+                                       name="captcha"
+                                       size="25"
+                                       tabindex="3"
+                                       autocomplete="off"/>
+                                <img th:src="@{/captcha}" id="captchaCode" style="padding-left:5px;width: 100px;height:40px;cursor:pointer;"
+                                     th:title="#{screen.welcome.change.captcha}" onclick="changeCaptcha()">
+                            </div>
+                        </section>
                         <section class="form-check" th:if="${passwordManagementEnabled && param.doChangePassword != null}">
                             <p>
                                 <input type="checkbox" name="doChangePassword" id="doChangePassword"

@@ -20,7 +20,7 @@ public class CaptchaUtil{
     /**
      * 验证码图片的宽度。
      */
-    private int width = 100;
+    private int width = 95;
 
     /**
      * 验证码图片的高度。

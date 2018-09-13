@@ -1,7 +1,9 @@
 package com.zjasm.captcha;
 
 import org.apereo.cas.authentication.RememberMeUsernamePasswordCredential;
+import org.apereo.cas.authentication.UsernamePasswordCredential;
 import org.apereo.cas.configuration.CasConfigurationProperties;
+import org.apereo.cas.web.flow.CasWebflowConstants;
 import org.apereo.cas.web.flow.configurer.DefaultLoginWebflowConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
@@ -19,17 +21,18 @@ public class CustomWebflowConfigurer extends DefaultLoginWebflowConfigurer {
 
     @Override
     protected void createRememberMeAuthnWebflowConfig(Flow flow) {
-        if (this.casProperties.getTicket().getTgt().getRememberMe().isEnabled()) {
-            this.createFlowVariable(flow, "credential", RememberMeUsernamePasswordCredential.class);
-            ViewState state = (ViewState)this.getState(flow, "viewLoginForm", ViewState.class);
-            BinderConfiguration cfg = this.getViewStateBinderConfiguration(state);
-            cfg.addBinding(new BinderConfiguration.Binding("rememberMe", (String)null, false));
+        if (casProperties.getTicket().getTgt().getRememberMe().isEnabled()) {
+            createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL, RememberMeUsernamePasswordCredential.class);
+            final ViewState state = getState(flow, CasWebflowConstants.STATE_ID_VIEW_LOGIN_FORM, ViewState.class);
+            final BinderConfiguration cfg = getViewStateBinderConfiguration(state);
+            cfg.addBinding(new BinderConfiguration.Binding("rememberMe", null, false));
         } else {
-            this.createFlowVariable(flow, "credential", UsernamePasswordCaptchaCredential.class);
-            ViewState state = (ViewState)this.getState(flow, "viewLoginForm", ViewState.class);
-            BinderConfiguration cfg = this.getViewStateBinderConfiguration(state);
-            cfg.addBinding(new BinderConfiguration.Binding("captcha", (String)null, true));
+            createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL, UsernamePasswordCaptchaCredential.class);
+            final ViewState state = getState(flow, CasWebflowConstants.STATE_ID_VIEW_LOGIN_FORM, ViewState.class);
+            final BinderConfiguration cfg = getViewStateBinderConfiguration(state);
+            cfg.addBinding(new BinderConfiguration.Binding("captcha", null, true));
         }
+
 
     }
 }

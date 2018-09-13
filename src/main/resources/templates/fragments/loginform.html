@@ -76,13 +76,13 @@
                         </section>
                         <section class="form-group">
                             <label for="captcha" th:utext="#{screen.welcome.label.captcha}">captcha</label>
-                            <!--th:field="*{captcha}"-->
                             <div>
                                 <input class="form-control required" style="float: left;width: 75%;"
                                        id="captcha"
                                        name="captcha"
                                        size="25"
                                        tabindex="3"
+                                       th:field="*{captcha}"
                                        autocomplete="off"/>
                                 <img th:src="@{/captcha}" id="captchaCode" style="padding-left:5px;width: 100px;height:40px;cursor:pointer;"
                                      th:title="#{screen.welcome.change.captcha}" onclick="changeCaptcha()">
@@ -96,12 +96,12 @@
                             </p>
                         </section>
 
-                        <section class="form-check">
+                        <!--<section class="form-check">
                             <p>
                                 <input type="checkbox" name="rememberMe" id="rememberMe" value="true" tabindex="5"/>
                                 <label for="rememberMe" th:text="#{screen.rememberme.checkbox.title}"></label>
                             </p>
-                        </section>
+                        </section>-->
 
                         <section class="row" th:if="${recaptchaSiteKey != null AND recaptchaInvisible != null AND recaptchaSiteKey AND !recaptchaInvisible}">
                             <div class="g-recaptcha" th:attr="data-sitekey=${recaptchaSiteKey}"/>

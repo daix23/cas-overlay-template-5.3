@@ -21,17 +21,18 @@ public class CustomWebflowConfigurer extends DefaultLoginWebflowConfigurer {
 
     @Override
     protected void createRememberMeAuthnWebflowConfig(Flow flow) {
-        if (casProperties.getTicket().getTgt().getRememberMe().isEnabled()) {
+        /*if (casProperties.getTicket().getTgt().getRememberMe().isEnabled()) {
             createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL, RememberMeUsernamePasswordCredential.class);
             final ViewState state = getState(flow, CasWebflowConstants.STATE_ID_VIEW_LOGIN_FORM, ViewState.class);
             final BinderConfiguration cfg = getViewStateBinderConfiguration(state);
             cfg.addBinding(new BinderConfiguration.Binding("rememberMe", null, false));
-        } else {
+        } else {*/
             createFlowVariable(flow, CasWebflowConstants.VAR_ID_CREDENTIAL, UsernamePasswordCaptchaCredential.class);
             final ViewState state = getState(flow, CasWebflowConstants.STATE_ID_VIEW_LOGIN_FORM, ViewState.class);
             final BinderConfiguration cfg = getViewStateBinderConfiguration(state);
+            cfg.addBinding(new BinderConfiguration.Binding("rememberMe", null, false));
             cfg.addBinding(new BinderConfiguration.Binding("captcha", null, true));
-        }
+//        }
 
 
     }

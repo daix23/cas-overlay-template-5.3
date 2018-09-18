@@ -1,11 +1,9 @@
 package com.zjasm.captcha;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apereo.cas.authentication.UsernamePasswordCredential;
-
+import org.apereo.cas.authentication.RememberMeUsernamePasswordCredential;
 import javax.validation.constraints.Size;
 
-public class UsernamePasswordCaptchaCredential extends UsernamePasswordCredential{
+public class UsernamePasswordCaptchaCredential extends RememberMeUsernamePasswordCredential {
 
 
     @Size(min = 4,max = 4, message = "验证码不能为空")
@@ -15,16 +13,10 @@ public class UsernamePasswordCaptchaCredential extends UsernamePasswordCredentia
         return captcha;
     }
 
+
     public UsernamePasswordCaptchaCredential setCaptcha(String captcha) {
         this.captcha = captcha;
         return this;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder()
-                .appendSuper(super.hashCode())
-                .append(this.captcha)
-                .toHashCode();
-    }
 }

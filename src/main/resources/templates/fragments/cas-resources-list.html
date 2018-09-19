@@ -13,7 +13,7 @@
     <div th:fragment="cas-resource-list" id="cas-resource-list" class="card d-sm-none d-md-block">
         <div class="card-body">
             <h3 class="card-title" th:text="#{cas.login.resources.header}"></h3>
-            <ul class="list-group">
+            <ul class="list-group" id="services-list">
                 <!--<li class="list-group-item">
                     <a th:href="@{/status/dashboard}" th:inline="text">
                         <i class="fa fa-cogs"></i>[[#{cas.login.resources.dashboard}]]
@@ -44,7 +44,7 @@
                         <i class="fa fa-envelope"></i>[[#{cas.login.resources.mailinglist}]]
                     </a>
                 </li>-->
-                <li class="list-group-item">
+                <!--<li class="list-group-item">
                     <a id="RCComplat" href="" target="_blank">
                         <i class="fa fa-rss"></i><span th:text="#{cas.services.two}" />
                     </a>
@@ -68,7 +68,7 @@
                     <a id="casClient" href="" target="_blank">
                         <i class="fa fa-cogs"></i><span>casClient</span>
                     </a>
-                </li>
+                </li>-->
             </ul>
         </div>
     </div>

@@ -24,6 +24,28 @@
             }
             return returnvalue;
         }
+
+        function setServicesList(){
+            var url = /*[[@{/getServices}]]*/
+            $.ajax({
+                type: "GET",
+                url: url,
+                dataType: "json",
+                success: function(data){
+                    $('#services-list').empty();   //清空services-list里面的所有内容
+                    var html = '';
+                    var datas = data.items;
+                    $.each(datas, function(commentIndex, comment){
+                        html += '<li class="list-group-item">'
+                            +'<a  href="'+comment['site_domain']+'" target="_blank">'
+                            +'<i class="fa fa-rss"></i><span>'+comment['site_name']+'</span>'
+                            +'</a></li>';
+                    });
+                    $('#services-list').html(html);
+                }
+            });
+        }
+
         function setServersTGT() {
             var tgc = get_cookie("TGC");
             console.log("TGC:"+tgc);
@@ -41,14 +63,14 @@
             //document.getElementById("services-management").setAttribute("href","http://126.33.50.237:8809/cas-management/services/default?ticket="+tgc);
             document.getElementById("services-management").setAttribute("href","http://126.33.50.237:8809/cas-management/services/default");
             //document.getElementById("casClient").setAttribute("href","http://126.33.10.60:8080/casClient?ticket="+tgc);
-            document.getElementById("casClient").setAttribute("href","http://126.33.50.237:8080/casClient");
+            document.getElementById("casClient").setAttribute("href","http://126.33.10.60:8081/casClient");
             //document.getElementById("casClient").setAttribute("href",path+"http%3A%2F%2F126.33.10.60%3A8080%2FcasClient%2F");
 
         }
     </script>
 </head>
 
-<body onload="setServersTGT()">
+<body onload="setServicesList()">
 <main role="main" class="container mt-3 mb-3">
     <div layout:fragment="content" class="row">
         <div class="alert alert-success">

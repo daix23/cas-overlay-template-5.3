@@ -41,7 +41,8 @@
                                        th:value="${openIdLocalId}"/>
                             </div>
                             <div th:unless="${openIdLocalId}">
-                                <input class="form-control required"
+                                <i class="imgInput" style="background-image: url(images/person.png);"></i>
+                                <input class="form-control required" style="padding-left:23px;"
                                        id="username"
                                        th:placeholder="#{screen.welcome.input.username}"
                                        size="25"
@@ -57,7 +58,8 @@
                         <section class="form-group">
                             <!--<label for="password" th:utext="#{screen.welcome.label.password}">Password</label>-->
                             <div>
-                                <input class="form-control required"
+                                <i class="imgInput" style="background-image: url(images/password.png);"></i>
+                                <input class="form-control required" style="padding-left:23px;"
                                        type="password"
                                        id="password"
                                        th:placeholder="#{screen.welcome.input.password}"
@@ -77,7 +79,8 @@
                         <section class="form-group">
                            <!-- <label for="captcha" th:utext="#{screen.welcome.label.captcha}">captcha</label>-->
                             <div>
-                                <input class="form-control required" style="float: left;width: 70%;"
+                                <i class="imgInput" style="background-image: url(images/captcha.png);"></i>
+                                <input class="form-control required" style="padding-left:23px;float: left;width: 70%;"
                                        id="captcha"
                                        name="captcha"
                                        th:placeholder="#{screen.welcome.input.captcha}"
@@ -85,7 +88,7 @@
                                        tabindex="3"
                                        th:field="*{captcha}"
                                        autocomplete="off"/>
-                                <img th:src="@{/captcha}" id="captchaCode" style="padding-left:5px;width: 95px;height:40px;cursor:pointer;"
+                                <img th:src="@{/captcha}" id="captchaCode" style="padding-left:5px;width: 95px;height:38px;cursor:pointer;"
                                      th:title="#{screen.welcome.change.captcha}" onclick="changeCaptcha()">
                             </div>
                         </section>

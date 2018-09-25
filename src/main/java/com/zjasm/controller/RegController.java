@@ -44,7 +44,7 @@ public class RegController {
 
         HttpSession session = request.getSession();
 
-        CaptchaUtil captchaUtil = new CaptchaUtil(95, 40, 4);
+        CaptchaUtil captchaUtil = new CaptchaUtil(95, 38, 4);
         session.setAttribute("captcha", captchaUtil.getCode());
         captchaUtil.write(response.getOutputStream());
         return null;

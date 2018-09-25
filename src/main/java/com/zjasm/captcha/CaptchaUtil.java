@@ -25,7 +25,7 @@ public class CaptchaUtil{
     /**
      * 验证码图片的高度。
      */
-    private int height = 40;
+    private int height = 38;
 
     /**
      * 验证码字符个数
@@ -117,7 +117,7 @@ public class CaptchaUtil{
         gd.setFont(font);
 
         // 画边框。
-        gd.setColor(Color.BLACK);
+        gd.setColor(Color.lightGray);
         gd.drawRect(0, 0, width - 1, height - 1);
 
         // 随机产生160条干扰线，使图象中的认证码不易被其它程序探测到。

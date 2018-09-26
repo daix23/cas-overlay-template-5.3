@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md">
             <!-- Login form template begins here -->
-            <div th:fragment="loginform" class="card">
+            <div th:fragment="loginform" class="card" style="position: fixed;right:50px;">
                 <div class="card-header text-center">
                     <!--<h2 th:text="#{cas.login.pagetitle}">Login</h2>-->
                     <span class="fa-stack fa-1x hidden-xs">
@@ -21,7 +21,7 @@
                       <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
                     </span>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="padding-bottom:0.25rem;">
                     <form method="post" id="fm1" th:object="${credential}" action="login">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
                             <span th:each="err : ${#fields.errors('*')}" th:utext="${err}">Example error</span>
@@ -100,7 +100,7 @@
                             </p>
                         </section>
 
-                        <section class="form-check">
+                        <section class="form-check" style="padding-left: 0px;margin-top: -5px;margin-bottom: -10px;">
                             <p>
                                 <input type="checkbox" name="rememberMe" id="rememberMe" value="true" tabindex="5"/>
                                 <label for="rememberMe" th:text="#{screen.rememberme.checkbox.title}"></label>
@@ -114,7 +114,7 @@
                         <input type="hidden" name="execution" th:value="${flowExecutionKey}"/>
                         <input type="hidden" name="_eventId" value="submit"/>
                         <input type="hidden" name="geolocation"/>
-                        <input class="btn btn-block btn-submit"
+                        <input class="btn btn-block btn-submit" style="margin-bottom:15px;"
                                th:unless="${recaptchaSiteKey != null AND recaptchaInvisible != null AND recaptchaSiteKey AND recaptchaInvisible}"
                                name="submit"
                                accesskey="l"

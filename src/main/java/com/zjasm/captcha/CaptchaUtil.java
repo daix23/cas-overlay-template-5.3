@@ -3,6 +3,7 @@ package com.zjasm.captcha;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -118,7 +119,9 @@ public class CaptchaUtil{
 
         // 画边框。
         gd.setColor(Color.lightGray);
-        gd.drawRect(0, 0, width - 1, height - 1);
+        //gd.drawRect(0, 0, width - 1, height - 1);
+        //设置圆角
+        gd.drawRoundRect(0, 0, width-1, height-1,8,8);
 
         // 随机产生160条干扰线，使图象中的认证码不易被其它程序探测到。
         gd.setColor(Color.BLACK);

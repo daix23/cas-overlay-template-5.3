@@ -36,7 +36,7 @@ public class RegController {
     @GetMapping(value = "captcha")
     public String capcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
         // 设置响应的类型格式为图片格式
-        response.setContentType("image/jpeg");
+        response.setContentType("image/png");
         //禁止图像缓存。
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Cache-Control", "no-cache");

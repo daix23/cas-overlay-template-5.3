@@ -1,6 +1,6 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^http://126.33.50.237:8080:8080/RCComplat",
+  "serviceId" : "^http://126.33.50.237:8080:8080/RCComplat.*",
   "name" : "RCComplat",
   "theme" : "apereo",
   "id" : 10000002,

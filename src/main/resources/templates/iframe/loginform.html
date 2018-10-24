@@ -6,21 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
     <title>Login Form Fragment</title>
-    <link href="../../static/css/cas.css" rel="stylesheet" th:remove="tag" />
+    <link rel="stylesheet" th:href="@{${#themes.code('cas.standard.css.file')}}"/>
+    <link rel="stylesheet" th:href="@{${#themes.code('cas.myself.css')}}"/>
 </head>
 <body>
 <main role="main" class="container mt-3 mb-3">
     <div class="row">
         <div class="col-md">
             <!-- Login form template begins here -->
-            <div th:fragment="loginform" class="card" style="position: fixed;right:50px;">
-                <div class="card-header text-center">
-                    <!--<h2 th:text="#{cas.login.pagetitle}">Login</h2>-->
+            <div th:fragment="loginform" class="card" style="position: fixed;left:0px;">
+                <!--<div class="card-header text-center">
+                    &lt;!&ndash;<h2 th:text="#{cas.login.pagetitle}">Login</h2>&ndash;&gt;
                     <span class="fa-stack fa-1x hidden-xs">
                       <i class="fa fa-circle fa-stack-2x"></i>
                       <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
                     </span>
-                </div>
+                </div>-->
                 <div class="card-body" style="padding-bottom:0.25rem;">
                     <form method="post" id="fm1" th:object="${credential}" action="login">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
@@ -152,8 +153,10 @@
                     <script type="text/javascript" th:inline="javascript">
                         var i = [[#{screen.welcome.button.loginwip}]]
                         $( document ).ready(function() {
-                            //先显示头部
-                            $("header").css('display','block');
+                            //去掉头部尾部
+                            $("header").remove();
+                            $("footer").remove();
+
                             $("#fm1").submit(function () {
                                 $(":submit").attr("disabled", true);
                                 $(":submit").attr("value", i);
@@ -162,8 +165,6 @@
                             });
                         });
                     </script>
-
-                    <!--<div th:replace="fragments/loginsidebar :: loginsidebar" />-->
                 </div>
             </div>
         </div>

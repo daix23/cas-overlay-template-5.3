@@ -1,0 +1,9 @@
+body {
+    background-image: none !important;
+}
+body > .container {
+    padding: 0px 0px 0;
+}
+.card {
+    border: 0px solid rgba(0, 0, 0, 0);
+}

@@ -32,6 +32,7 @@ public class CustomWebflowConfigurer extends DefaultLoginWebflowConfigurer {
             final BinderConfiguration cfg = getViewStateBinderConfiguration(state);
             cfg.addBinding(new BinderConfiguration.Binding("rememberMe", null, false));
             cfg.addBinding(new BinderConfiguration.Binding("captcha", null, true));
+            cfg.addBinding(new BinderConfiguration.Binding("orgcode", null, true));
 //        }
 
 

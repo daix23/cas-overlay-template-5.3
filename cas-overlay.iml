@@ -259,5 +259,6 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-security-filter:2.0.10.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-tickets-api:5.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-webflow:5.3.2" level="project" />
+    <orderEntry type="library" exported="" name="otherLibs" level="project" />
   </component>
 </module>

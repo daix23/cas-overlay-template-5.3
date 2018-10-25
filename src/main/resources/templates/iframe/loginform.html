@@ -55,7 +55,28 @@
                                        autocomplete="off"/>
                             </div>
                         </section>
-
+                        <section class="form-group">
+                            <!--<label for="password" th:utext="#{screen.welcome.label.password}">Password</label>-->
+                            <div>
+                                <i class="imgInput" style="background-image: url(images/org.png);"></i>
+                                <input class="form-control required" style="padding-left:23px;"
+                                       name="orgcode"
+                                       id="orgcode"
+                                       th:placeholder="#{screen.welcome.input.orgcode}"
+                                       size="32"
+                                       value="001"
+                                       tabindex="2"
+                                       th:accesskey="#{screen.welcome.label.orgcode.accesskey}"
+                                       th:field="*{orgcode}"
+                                       autocomplete="off"/>
+                                <span id="capslock-on" style="display:none;">
+                                <p>
+                                    <i class="fa fa-exclamation-circle"></i>
+                                    <span th:utext="#{screen.capslock.on}"/>
+                                </p>
+                            </span>
+                            </div>
+                        </section>
                         <section class="form-group">
                             <!--<label for="password" th:utext="#{screen.welcome.label.password}">Password</label>-->
                             <div>

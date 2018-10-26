@@ -106,8 +106,15 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         String username=mycredential1.getUsername();
         String pwdStr = mycredential1.getPassword();
 
-        //易和验证
-        if(false){
+        //查询数据库加密的的密码
+        Map<String,Object> user = template.queryForMap(jdbcPros.getSql(), mycredential1.getUsername());
+
+        if(user==null){
+            mycredential1.setPassword("");
+            throw new FailedLoginException("没有该用户");
+        }
+        AuthenticationHandlerExecutionResult handlerResult = null;
+        if(false){//易和验证
             //1、对接易和用户名密码验证并返回令牌
             /*String resultStr = "";
             try {
@@ -143,44 +150,46 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pswBs64);
             if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
                 Log.info("易和用户登录成功");
+                handlerResult = authOkResult(attributes,username,user,mycredential1);
             }else {
                 String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
                 Log.info(msg);
                 mycredential1.setPassword("");
                 throw new NoAuthException(msg);
             }
-        }
+        }else{//本地验证
+            //给数据进行md5加密
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(pwdStr.toString().getBytes());
+            String pwd = new BigInteger(1, md.digest()).toString(16);
 
-        //查询数据库加密的的密码
-        Map<String,Object> user = template.queryForMap(jdbcPros.getSql(), mycredential1.getUsername());
-
-        if(user==null){
-            throw new FailedLoginException("没有该用户");
-        }
-        //给数据进行md5加密
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(pwdStr.toString().getBytes());
-        String pwd = new BigInteger(1, md.digest()).toString(16);
-
-        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        //if(encoder.matches(pwd,user.get("localpwd").toString())){
-        if(pwd.equals(user.get(jdbcPros.getFieldPassword()).toString())){
-            HttpSession session = attributes.getRequest().getSession();
-            session.setAttribute("username", username);
-            //返回多属性
-            JdbcPrincipalAttributesProperties jdbcAttrs = casProperties.getAuthn().getAttributeRepository().getJdbc().get(0);
-            Map<String, Object> map=new HashMap<>();
-            Map<String, String> attrMap =  jdbcAttrs.getAttributes();
-            for (String str : attrMap.keySet()) {
-                //map.keySet()返回的是所有key的值
-                String val = (String)attrMap.get(str);//得到每个key多对用value的值
-                map.put(val, user.get(val).toString());
+            //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            //if(encoder.matches(pwd,user.get("localpwd").toString())){
+            if(pwd.equals(user.get(jdbcPros.getFieldPassword()).toString())){
+                handlerResult = authOkResult(attributes,username,user,mycredential1);
+            }else{
+                mycredential1.setPassword("");
+                throw new FailedLoginException("用户名或密码不正确");
             }
-
-            return createHandlerResult(mycredential1, principalFactory.createPrincipal(username, map), null);
         }
-        throw new FailedLoginException("用户名或密码不正确");
+        return handlerResult;
     }
+
+    public AuthenticationHandlerExecutionResult authOkResult(ServletRequestAttributes attributes,String username,Map<String,Object> user,UsernamePasswordCaptchaCredential mycredential1){
+        HttpSession session = attributes.getRequest().getSession();
+        session.setAttribute("username", username);
+        //返回多属性
+        JdbcPrincipalAttributesProperties jdbcAttrs = casProperties.getAuthn().getAttributeRepository().getJdbc().get(0);
+        Map<String, Object> map=new HashMap<>();
+        Map<String, String> attrMap =  jdbcAttrs.getAttributes();
+        for (String str : attrMap.keySet()) {
+            //map.keySet()返回的是所有key的值
+            String val = (String)attrMap.get(str);//得到每个key多对用value的值
+            map.put(val, user.get(val).toString());
+        }
+        return createHandlerResult(mycredential1, principalFactory.createPrincipal(username, map), null);
+    }
+
 
     @Override
     public boolean supports(Credential credential) {

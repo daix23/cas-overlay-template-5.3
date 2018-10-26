@@ -10,6 +10,7 @@ import com.zjasm.exception.InvalidCaptchaException;
 import com.zjasm.exception.NoAuthException;
 import com.zjasm.model.PortTypeParams;
 import com.zjasm.util.CommonUtil;
+import com.zjasm.util.ConfigUtil;
 import com.zjasm.util.Dbutil;
 import com.zjasm.webservice.SimpleAuthService;
 import com.zjasm.webservice.SimpleAuthServicePortType;
@@ -114,7 +115,10 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             throw new FailedLoginException("没有该用户");
         }
         AuthenticationHandlerExecutionResult handlerResult = null;
-        if(false){//易和验证
+        //获取验证开关
+        ConfigUtil configs= ConfigUtil.getConfig("config.properties");
+        boolean authIdmFlag = Boolean.parseBoolean(configs.getProperty("authIdmFlag"));
+        if(authIdmFlag){//易和验证
             //1、对接易和用户名密码验证并返回令牌
             /*String resultStr = "";
             try {
@@ -162,7 +166,6 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(pwdStr.toString().getBytes());
             String pwd = new BigInteger(1, md.digest()).toString(16);
-
             //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             //if(encoder.matches(pwd,user.get("localpwd").toString())){
             if(pwd.equals(user.get(jdbcPros.getFieldPassword()).toString())){

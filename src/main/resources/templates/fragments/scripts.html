@@ -8,6 +8,8 @@
 <script th:src="@{#{webjars.headmin.js}}"></script>
 <script th:src="@{#{webjars.storemin.js}}"></script>
 <script type="text/javascript" th:src="@{${#themes.code('cas.javascript.file')}}"></script>
+<script type="text/javascript" th:src="@{${#themes.code('cas.javascript.zTreeCorefile')}}"></script>
+<script type="text/javascript" th:src="@{${#themes.code('cas.javascript.zTreeExcheckfile')}}"></script>
 <!--<script type="text/javascript" src="js/cas.js"></script>-->
 
 <script th:inline="javascript">
@@ -36,6 +38,106 @@ function changeCaptcha(){
     //$("#captchaCode").attr('src',"/cas/captcha?rmd="+rmd);
 }
 
+var setting ={
+    check: {
+        enable: true,
+            chkboxType: { "Y": "ps", "N": "ps" }
+    },
+    view: {
+        dblClickExpand: true,
+            showIcon: false,
+            showTitle: true,
+            txtSelectedEnable: true
+    },
+    data: {
+        simpleData: {
+            enable: true
+        }
+    },
+    async: {
+        enable: true,
+        url:/*[[@{/getOrg}]]*/,
+        //url: "http://dlxxbs.zjzwfw.gov.cn/ReportServer/rest/function/org/get",
+        autoParam: ["id=orgcoding"],//变化参数
+        //otherParam:{"otherParam":"zTreeAsyncTest"},固定参数
+        type: "get",
+        dataType:'json',
+        dataFilter: filterOrg
+    },
+    callback: {
+        onClick: onClickOrg
+    }
+}
+
+function filterOrg(treeId, parentNode, childNodes) {
+    var nodes = [];
+    $.each(childNodes.result, function (i, m) {
+        var pid;
+        if (m.orgcoding.length == 3)
+            pid = "0";
+        else
+            pid = m.orgcoding.substring(0, m.orgcoding.length - 3);
+        nodes.push({
+            id: m.orgcoding,
+            pId: pid,
+            devcoding: m.devcoding,
+            name: m.orgname,
+            isParent: true,
+            nocheck:true
+        });
+    });
+    $("#menuContent").children("img").remove();
+    return nodes;
+}
+
+function onClickOrg(e, treeId, treeNode) {
+    $("#orgcode").val(treeNode.name);//设置组织名称,显示
+    $("#orgcodeVal").val(treeNode.id);//设置组织编号,传值
+    hideMenu();
+}
+
+function initZTree() {
+    $("#orgcode").focusin(this.selectOrg);
+    $.fn.zTree.init($("#treeDemo"), this.setting);
+}
+
+/*function showMenu () {
+    $("#menuContent").slideDown("fast");
+    $("body").bind("mousedown", onBodyDown);
+}*/
+function hideMenu() {
+    $("#menuContent").slideUp("fast");
+    $("body").unbind("mousedown", onBodyDown);
+}
+function onBodyDown(event) {
+    if (!(event.target.id == "menuBtn" || event.target.id == "orgcode" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+        hideMenu();
+    }
+}
+/*
+function getOrgListByCode(orgcoding){
+    var url = "http://126.33.50.237:8899/RSComplat/rest/function/org/get"
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {orgcoding:orgcoding},
+            dataType: "json",
+            success: function(data){
+                console.log(data.code);
+
+                $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+
+            }
+        });
+}
+*/
+
+function selectOrg() {
+    var cityObj = $("#orgcode");
+    var cityOffset = $("#orgcode").offset();
+    $("#menuContent").css({left:cityOffset.left + "px", top:cityOffset.top + cityObj.outerHeight() + "px"}).slideDown("fast");
+    $("body").bind("mousedown", onBodyDown);
+}
 
 function loadjQueryCookies() {
 	var jqueryUrl = /*[[@{#{webjars.jquerycookie.js}}]]*/; 

@@ -148,7 +148,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
 
             //--3个参数，1、sql 2、要传递的参数数组 3、返回来的对象class
             //获取组合name
-            String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username,},java.lang.String.class);
+            String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
             Prop prop = IDMConfig.getProp(IDM_KEY_GOV);
             IDMClient client = new IDMClient(prop);
             IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pswBs64);

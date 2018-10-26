@@ -7,7 +7,6 @@
 
     <title>Login Form Fragment</title>
     <link rel="stylesheet" th:href="@{${#themes.code('cas.standard.css.file')}}"/>
-    <link rel="stylesheet" th:href="@{${#themes.code('cas.myself.css')}}"/>
 </head>
 <body>
 <main role="main" class="container mt-3 mb-3">
@@ -60,15 +59,18 @@
                             <div>
                                 <i class="imgInput" style="background-image: url(images/org.png);"></i>
                                 <input class="form-control required" style="padding-left:23px;"
-                                       name="orgcode"
+                                       name="orgcodeN"
                                        id="orgcode"
                                        th:placeholder="#{screen.welcome.input.orgcode}"
                                        size="32"
-                                       value="001"
+                                       value=""
                                        tabindex="2"
+                                       readonly
                                        th:accesskey="#{screen.welcome.label.orgcode.accesskey}"
-                                       th:field="*{orgcode}"
                                        autocomplete="off"/>
+                                <!--onclick="selectOrg()"-->
+                                <input type="hidden" id="orgcodeVal" name="orgcode"
+                                       th:field="*{orgcode}"/>
                                 <span id="capslock-on" style="display:none;">
                                 <p>
                                     <i class="fa fa-exclamation-circle"></i>
@@ -171,13 +173,17 @@
                         <p/>
                     </div>
 
+                    <div id="menuContent" class="menuContent" style="display:none; position: fixed;z-index: 99999">
+                        <ul id="treeDemo" class="ztree" style="margin-top:0; width:240px; height: 300px;"></ul>
+                    </div>
+
                     <script type="text/javascript" th:inline="javascript">
                         var i = [[#{screen.welcome.button.loginwip}]]
                         $( document ).ready(function() {
                             //去掉头部尾部
                             $("header").remove();
                             $("footer").remove();
-
+                            initZTree();
                             $("#fm1").submit(function () {
                                 $(":submit").attr("disabled", true);
                                 $(":submit").attr("value", i);

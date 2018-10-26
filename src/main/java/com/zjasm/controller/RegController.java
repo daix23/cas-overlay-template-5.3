@@ -9,6 +9,7 @@ import com.commnetsoft.model.TicketValidationResult;
 import com.commnetsoft.util.ParameterUtil;
 import com.commnetsoft.util.StrHelper;
 import com.zjasm.captcha.CaptchaUtil;
+import com.zjasm.util.CommonUtil;
 import com.zjasm.util.Dbutil;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,5 +148,46 @@ public class RegController {
         out.close();
         return null;
     }
+
+    @GetMapping(value = "getOrg")
+    public String getOrg(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        String orgcoding = request.getParameter("orgcoding");
+        StringBuilder sb=new StringBuilder();
+        sb.append("SELECT orgcoding,devcoding,orgname FROM s_orginfo WHERE ISDEL=0 ");
+        if (!CommonUtil.isNullOrEmpty(orgcoding)) {
+            sb.append(" AND orgcoding LIKE '%"+orgcoding+"%' ");
+        }else{
+            orgcoding = "";
+        }
+        String scope = "";
+        if (!CommonUtil.isNullOrEmpty(scope) && scope.equals("1")) {
+            sb.append("");
+        }else{
+            sb.append("  AND LENGTH(orgcoding) = LENGTH('"+orgcoding+"') + 3  ");
+        }
+        sb.append(" ORDER BY orderby ASC");
+        String sql = sb.toString();
+        DriverManagerDataSource d=new DriverManagerDataSource();
+        List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
+        QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
+        d.setDriverClassName(jdbcPros.getDriverClass());
+        d.setUrl(jdbcPros.getUrl());
+        d.setUsername(jdbcPros.getUser());
+        d.setPassword(jdbcPros.getPassword());
+        JdbcTemplate template=new JdbcTemplate();
+        template.setDataSource(d);
+        List list = template.queryForList(sql);
+        HashMap<String, Object> jsonObj = new HashMap<String, Object>();
+        jsonObj.put("result", list);
+        JSONObject json =  new JSONObject(jsonObj);
+        out.write(json.toString());
+        out.flush();
+        out.close();
+        return null;
+    }
+
+
 
 }

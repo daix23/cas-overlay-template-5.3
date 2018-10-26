@@ -36,7 +36,15 @@ public class CommonUtil {
         return String.format(f, number);
     }
 
-
+    /**
+     * 判断字符串为否为空
+     *
+     * @param str
+     * @return
+     */
+    public static Boolean isNullOrEmpty(String str) {
+        return (str == null || str.length() <= 0);
+    }
 
     // 将 BASE64 编码的字符串 s 进行解码
     @SuppressWarnings("restriction")

@@ -154,7 +154,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pswBs64);
             if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
                 Log.info("易和用户登录成功");
-                handlerResult = authOkResult(attributes,username,user,mycredential1);
+                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
             }else {
                 String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
                 Log.info(msg);
@@ -169,7 +169,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             //if(encoder.matches(pwd,user.get("localpwd").toString())){
             if(pwd.equals(user.get(jdbcPros.getFieldPassword()).toString())){
-                handlerResult = authOkResult(attributes,username,user,mycredential1);
+                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
             }else{
                 mycredential1.setPassword("");
                 throw new FailedLoginException("用户名或密码不正确");
@@ -178,7 +178,9 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         return handlerResult;
     }
 
-    public AuthenticationHandlerExecutionResult authOkResult(ServletRequestAttributes attributes,String username,Map<String,Object> user,UsernamePasswordCaptchaCredential mycredential1){
+    public AuthenticationHandlerExecutionResult authOkResult(ServletRequestAttributes attributes,
+                                                             String username,Map<String,Object> user,
+                                                             UsernamePasswordCaptchaCredential mycredential1,String orgcode){
         HttpSession session = attributes.getRequest().getSession();
         session.setAttribute("username", username);
         //返回多属性
@@ -190,6 +192,8 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             String val = (String)attrMap.get(str);//得到每个key多对用value的值
             map.put(val, user.get(val).toString());
         }
+        //多返回一个orgcode参数
+        map.put("orgcode", orgcode);
         return createHandlerResult(mycredential1, principalFactory.createPrincipal(username, map), null);
     }
 

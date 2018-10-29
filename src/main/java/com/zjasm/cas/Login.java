@@ -12,6 +12,7 @@ import com.zjasm.model.PortTypeParams;
 import com.zjasm.util.CommonUtil;
 import com.zjasm.util.ConfigUtil;
 import com.zjasm.util.Dbutil;
+import com.zjasm.util.MD5Util2;
 import com.zjasm.webservice.SimpleAuthService;
 import com.zjasm.webservice.SimpleAuthServicePortType;
 import org.apereo.cas.authentication.Credential;
@@ -143,17 +144,21 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         throw new NoAuthException("msg");
                     }
                 }*/
-
-            String pswBs64= CommonUtil.getFromBASE64(pwdStr);
+            //不需要解码
+            //String pswBs64= CommonUtil.getFromBASE64(pwdStr);
 
             //--3个参数，1、sql 2、要传递的参数数组 3、返回来的对象class
             //获取组合name
             String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
             Prop prop = IDMConfig.getProp(IDM_KEY_GOV);
             IDMClient client = new IDMClient(prop);
-            IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pswBs64);
+            IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pwdStr);
             if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
                 Log.info("易和用户登录成功");
+                //重置本地密码，本地单点登录
+                //String localpwd = (String)user.get("localpwd");
+                //String lp = MD5Util2.convertMD5(localpwd);
+                mycredential1.setPassword("123456");
                 handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
             }else {
                 String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";

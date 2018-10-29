@@ -10,10 +10,12 @@ import com.commnetsoft.util.ParameterUtil;
 import com.commnetsoft.util.StrHelper;
 import com.zjasm.captcha.CaptchaUtil;
 import com.zjasm.util.CommonUtil;
-import com.zjasm.util.Dbutil;
+import com.zjasm.util.ConfigUtil;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,8 @@ import java.util.Map;
 @RestController
 @EnableConfigurationProperties(CasConfigurationProperties.class)
 public class RegController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegController.class);
 
     @Autowired
     private CasConfigurationProperties casProperties;
@@ -188,6 +191,18 @@ public class RegController {
         return null;
     }
 
+    @GetMapping(value = "/logoutCas")
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        logger.info("logoutCas");
+        //获取验证开关
+        ConfigUtil configs= ConfigUtil.getConfig("config.properties");
+        boolean authIdmFlag = Boolean.parseBoolean(configs.getProperty("authIdmFlag"));
+        if(authIdmFlag){//易和登出
+            logger.info("易和登出成功");
+        }
+        String service = request.getParameter("service");
+        response.sendRedirect("logout?service="+service);
+    }
 
 
 }

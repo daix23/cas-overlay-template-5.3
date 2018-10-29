@@ -4,17 +4,10 @@ import com.commnetsoft.IDMClient;
 import com.commnetsoft.IDMConfig;
 import com.commnetsoft.Prop;
 import com.commnetsoft.model.IdValidationResult;
-import com.github.javaparser.utils.Log;
 import com.zjasm.captcha.UsernamePasswordCaptchaCredential;
 import com.zjasm.exception.InvalidCaptchaException;
 import com.zjasm.exception.NoAuthException;
-import com.zjasm.model.PortTypeParams;
-import com.zjasm.util.CommonUtil;
 import com.zjasm.util.ConfigUtil;
-import com.zjasm.util.Dbutil;
-import com.zjasm.util.MD5Util2;
-import com.zjasm.webservice.SimpleAuthService;
-import com.zjasm.webservice.SimpleAuthServicePortType;
 import org.apereo.cas.authentication.Credential;
 import org.apereo.cas.authentication.AuthenticationHandlerExecutionResult;
 import org.apereo.cas.authentication.PreventedException;
@@ -24,6 +17,8 @@ import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.core.authentication.JdbcPrincipalAttributesProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
 import org.apereo.cas.services.ServicesManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,21 +27,19 @@ import org.springframework.util.LinkedCaseInsensitiveMap;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
 import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 @EnableConfigurationProperties(CasConfigurationProperties.class)
 public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(Login.class);
 
     @Autowired
     private CasConfigurationProperties casProperties;
@@ -154,7 +147,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             IDMClient client = new IDMClient(prop);
             IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pwdStr);
             if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
-                Log.info("易和用户登录成功");
+                logger.info("易和用户登录成功");
                 //重置本地密码，本地单点登录
                 //String localpwd = (String)user.get("localpwd");
                 //String lp = MD5Util2.convertMD5(localpwd);
@@ -162,7 +155,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                 handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
             }else {
                 String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
-                Log.info(msg);
+                logger.info(msg);
                 mycredential1.setPassword("");
                 throw new NoAuthException(msg);
             }

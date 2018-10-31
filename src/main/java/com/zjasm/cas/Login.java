@@ -7,7 +7,8 @@ import com.commnetsoft.model.IdValidationResult;
 import com.zjasm.captcha.UsernamePasswordCaptchaCredential;
 import com.zjasm.exception.InvalidCaptchaException;
 import com.zjasm.exception.NoAuthException;
-import com.zjasm.util.ConfigUtil;
+import com.zjasm.util.IdmConfigUtil;
+import com.zjasm.util.PropertiesLoaderUtil;
 import org.apereo.cas.authentication.Credential;
 import org.apereo.cas.authentication.AuthenticationHandlerExecutionResult;
 import org.apereo.cas.authentication.PreventedException;
@@ -39,12 +40,10 @@ import java.util.Map;
 @EnableConfigurationProperties(CasConfigurationProperties.class)
 public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(Login.class);
+    private static final Logger logger = LoggerFactory.getLogger(Login.class);
 
     @Autowired
     private CasConfigurationProperties casProperties;
-
-    public final static String IDM_KEY_GOV = "idm_gov";
 
     public Login(String name, ServicesManager servicesManager, PrincipalFactory principalFactory, Integer order) {
         super(name, servicesManager, principalFactory, order);
@@ -67,7 +66,6 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
         QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
         QueryJdbcAuthenticationProperties jdbcPros1 = jdbcProsList.get(1);
-        QueryJdbcAuthenticationProperties jdbcPros2 = jdbcProsList.get(2);
         d.setDriverClassName(jdbcPros.getDriverClass());
         d.setUrl(jdbcPros.getUrl());
         d.setUsername(jdbcPros.getUser());
@@ -110,9 +108,11 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         }
         AuthenticationHandlerExecutionResult handlerResult = null;
         //获取验证开关
-        ConfigUtil configs= ConfigUtil.getConfig("config.properties");
-        boolean authIdmFlag = Boolean.parseBoolean(configs.getProperty("authIdmFlag"));
-        if(authIdmFlag){//易和验证
+        PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
+        boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
+        System.out.println("易和接入开关authIdmFlag："+authIdmFlag);
+        if(authIdmFlag){
+            System.out.println("易和用户验证");
             //1、对接易和用户名密码验证并返回令牌
             /*String resultStr = "";
             try {
@@ -142,25 +142,34 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
 
             //--3个参数，1、sql 2、要传递的参数数组 3、返回来的对象class
             //获取组合name
-            String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
-            Prop prop = IDMConfig.getProp(IDM_KEY_GOV);
+            String sqlStr = "SELECT CONCAT(LOGINNAME,'.',devcoding) AS LOGINNAME FROM userinfo WHERE Userorg like '"+orgcode+"%' AND " +
+                    "LOGINNAME='"+username+"' AND deleteflag=0 AND usertype=1";
+            String nameConcat = (String) template.queryForObject(sqlStr,java.lang.String.class);
+            //String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
+            //String nameConcat = username+".hz";
+            System.out.println("易和接入nameConcat："+nameConcat);
+            IdmConfigUtil.getInstance();
+            Prop prop = IDMConfig.getProp(IdmConfigUtil.IDM_KEY_GOV);
+            System.out.println("易和接入prop："+prop.getUrl());
             IDMClient client = new IDMClient(prop);
             IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pwdStr);
+            System.out.println("易和接入idValiResult："+idValiResult.getResult());
             if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
-                logger.info("易和用户登录成功");
+                System.out.println("易和用户登录成功");
                 //重置本地密码，本地单点登录
                 //String localpwd = (String)user.get("localpwd");
                 //String lp = MD5Util2.convertMD5(localpwd);
                 mycredential1.setPassword("123456");
                 handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
-            }else {
-                String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
-                logger.info(msg);
+            }else {//
+                String errmsg = idValiResult.getErrmsg();
+                System.out.println("易和用户登录失败："+errmsg);
                 mycredential1.setPassword("");
-                throw new NoAuthException(msg);
+                throw new NoAuthException(errmsg);
             }
         }else{//本地验证
             //给数据进行md5加密
+            System.out.println("本地用户验证");
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(pwdStr.toString().getBytes());
             String pwd = new BigInteger(1, md.digest()).toString(16);

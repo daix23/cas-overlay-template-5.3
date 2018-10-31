@@ -1,6 +1,6 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^(https|imaps|http)://126.33.10.60:8080/cas.*",
+  "serviceId" : "^(https|imaps|http)://10.20.36.84:8080/cas.*",
   "name" : "HTTPS and IMAPS",
   "id" : 10000001,
   "description" : "This service definition authorizes all application urls that support HTTPS and IMAPS protocols.",

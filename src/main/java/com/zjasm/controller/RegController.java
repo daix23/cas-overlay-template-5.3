@@ -11,6 +11,7 @@ import com.commnetsoft.util.StrHelper;
 import com.zjasm.captcha.CaptchaUtil;
 import com.zjasm.util.CommonUtil;
 import com.zjasm.util.ConfigUtil;
+import com.zjasm.util.IdmConfigUtil;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
 import org.json.JSONObject;
@@ -86,7 +87,8 @@ public class RegController {
         /**
          * 第一步：实例化一个客户端对象
          */
-        Prop prop = IDMConfig.getProp(IDM_KEY_GOV);
+        IdmConfigUtil.getInstance();
+        Prop prop = IDMConfig.getProp(IdmConfigUtil.IDM_KEY_GOV);
         IDMClient client = new IDMClient(prop);
         /**
          * 收到票据ticket，进行票据认证。

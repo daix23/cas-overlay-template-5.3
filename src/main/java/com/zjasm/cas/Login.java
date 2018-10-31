@@ -52,7 +52,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
     @Override
     protected AuthenticationHandlerExecutionResult doAuthentication(Credential credential) throws GeneralSecurityException, PreventedException {
         UsernamePasswordCaptchaCredential mycredential1 = (UsernamePasswordCaptchaCredential) credential;
-
+        logger.info("yiy易和");
         String captcha = mycredential1.getCaptcha();
         String orgcode = mycredential1.getOrgcode();
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -110,9 +110,9 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         //获取验证开关
         PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
         boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
-        System.out.println("易和接入开关authIdmFlag："+authIdmFlag);
+        logger.info("易和接入开关authIdmFlag："+authIdmFlag);
         if(authIdmFlag){
-            System.out.println("易和用户验证");
+            logger.info("易和用户验证");
             //1、对接易和用户名密码验证并返回令牌
             /*String resultStr = "";
             try {
@@ -147,29 +147,32 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             String nameConcat = (String) template.queryForObject(sqlStr,java.lang.String.class);
             //String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
             //String nameConcat = username+".hz";
-            System.out.println("易和接入nameConcat："+nameConcat);
+            logger.info("易和接入nameConcat："+nameConcat);
             IdmConfigUtil.getInstance();
             Prop prop = IDMConfig.getProp(IdmConfigUtil.IDM_KEY_GOV);
-            System.out.println("易和接入prop："+prop.getUrl());
+            logger.info("易和接入prop："+prop.getUrl());
             IDMClient client = new IDMClient(prop);
             IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pwdStr);
-            System.out.println("易和接入idValiResult："+idValiResult.getResult());
+            logger.info("易和接入idValiResult："+idValiResult.getResult());
             if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
-                System.out.println("易和用户登录成功");
+                logger.info("易和用户登录成功");
                 //重置本地密码，本地单点登录
                 //String localpwd = (String)user.get("localpwd");
                 //String lp = MD5Util2.convertMD5(localpwd);
                 mycredential1.setPassword("123456");
+                String idmToken = idValiResult.getToken();
+                HttpSession session = attributes.getRequest().getSession();
+                session.setAttribute("idmToken", idmToken);
                 handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
-            }else {//
+            }else {
                 String errmsg = idValiResult.getErrmsg();
-                System.out.println("易和用户登录失败："+errmsg);
+                logger.info("易和用户登录失败："+errmsg);
                 mycredential1.setPassword("");
                 throw new NoAuthException(errmsg);
             }
         }else{//本地验证
             //给数据进行md5加密
-            System.out.println("本地用户验证");
+            logger.info("本地用户验证");
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(pwdStr.toString().getBytes());
             String pwd = new BigInteger(1, md.digest()).toString(16);

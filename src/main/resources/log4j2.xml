@@ -74,6 +74,11 @@
             <AppenderRef ref="casConsole"/>
             <AppenderRef ref="casFile"/>
         </AsyncLogger>
+        <!--增加自定义目录日志输出-->
+        <AsyncLogger name="com.zjasm" level="info" additivity="false" includeLocation="true">
+            <AppenderRef ref="casConsole"/>
+            <AppenderRef ref="casFile"/>
+        </AsyncLogger>
         <AsyncLogger name="org.apereo.cas.web.CasWebApplication" level="info" additivity="false" includeLocation="true">
             <AppenderRef ref="casConsole"/>
             <AppenderRef ref="casFile"/>

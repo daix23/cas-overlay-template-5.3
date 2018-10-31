@@ -7,11 +7,13 @@ import com.commnetsoft.Prop;
 import com.commnetsoft.model.GetUserInfoResult;
 import com.commnetsoft.model.TicketValidationResult;
 import com.commnetsoft.util.ParameterUtil;
+import com.commnetsoft.util.ServiceUtil;
 import com.commnetsoft.util.StrHelper;
 import com.zjasm.captcha.CaptchaUtil;
 import com.zjasm.util.CommonUtil;
-import com.zjasm.util.ConfigUtil;
+import com.zjasm.util.HttpRequestUtil;
 import com.zjasm.util.IdmConfigUtil;
+import com.zjasm.util.PropertiesLoaderUtil;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
 import org.json.JSONObject;
@@ -195,15 +197,44 @@ public class RegController {
 
     @GetMapping(value = "/logoutCas")
     public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        logger.info("logoutCas");
-        //获取验证开关
-        ConfigUtil configs= ConfigUtil.getConfig("config.properties");
-        boolean authIdmFlag = Boolean.parseBoolean(configs.getProperty("authIdmFlag"));
-        if(authIdmFlag){//易和登出
-            logger.info("易和登出成功");
+        try{
+            logger.info("统一登出入口：logoutCas");
+            //获取验证开关
+            PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
+            boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
+            if(authIdmFlag){//易和登出
+                String servicecode = propertiesLoaderUtil.getOneProp("servicecode");
+                String servicepwd = propertiesLoaderUtil.getOneProp("servicepwd");
+                String idmUrl = propertiesLoaderUtil.getOneProp("idmUrl");
+                HttpSession session = request.getSession();
+                Object idmTokenObj = session.getAttribute("idmToken");
+                String idmToken = null;
+                if(idmTokenObj!=null){
+                    idmToken = idmTokenObj.toString();
+                    /*http   logout 使用令牌实现单点登出IDM。
+                    servicecode	资源接入代码
+                    time	时间戳，格式为20091010121212
+                    sign	数据签名MD5(servicecode+servicepwd+time)
+                    token	令牌
+                    datatype	数据格式xml/json。默认json，其他错误格式也返回json*/
+                    String time = CommonUtil.GetTimeString();
+                    String sign = ServiceUtil.getMd5Sing(servicecode, servicepwd, time);
+                    String param = "servicecode="+servicecode+"&time="+time+"&sign="+sign+"&token"+idmToken+"&datatype=json";
+                    String result = HttpRequestUtil.sendGet(idmUrl+"/logout", param, "utf-8");
+                    JSONObject json =  new JSONObject(result);
+                    if(IDMClient.SUCCESS.equals(json.getString("result"))){
+                        logger.info("易和登出成功");
+                    }else{
+                        logger.info(json.getString("errmsg"));
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            String service = request.getParameter("service");
+            response.sendRedirect("logout?service="+service);
         }
-        String service = request.getParameter("service");
-        response.sendRedirect("logout?service="+service);
     }
 
 

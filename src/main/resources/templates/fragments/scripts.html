@@ -93,6 +93,7 @@ function filterOrg(treeId, parentNode, childNodes) {
 function onClickOrg(e, treeId, treeNode) {
     $("#orgcode").val(treeNode.name);//设置组织名称,显示
     $("#orgcodeVal").val(treeNode.id);//设置组织编号,传值
+    $("#devcodingVal").val(treeNode.devcoding);//设置组织域名,传值
     hideMenu();
 }
 

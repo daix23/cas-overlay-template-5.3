@@ -52,9 +52,9 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
     @Override
     protected AuthenticationHandlerExecutionResult doAuthentication(Credential credential) throws GeneralSecurityException, PreventedException {
         UsernamePasswordCaptchaCredential mycredential1 = (UsernamePasswordCaptchaCredential) credential;
-        logger.info("yiy易和");
         String captcha = mycredential1.getCaptcha();
         String orgcode = mycredential1.getOrgcode();
+        String devcoding = mycredential1.getDevcoding();//组织域名
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         String right = attributes.getRequest().getSession().getAttribute("captcha").toString();
         if(!captcha.equalsIgnoreCase(right)){
@@ -100,7 +100,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         String pwdStr = mycredential1.getPassword();
 
         //查询数据库加密的的密码
-        Map<String,Object> user = template.queryForMap(jdbcPros.getSql(), mycredential1.getUsername());
+        Map<String,Object> user = template.queryForMap(jdbcPros.getSql(), username);
 
         if(user==null){
             mycredential1.setPassword("");
@@ -142,11 +142,12 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
 
             //--3个参数，1、sql 2、要传递的参数数组 3、返回来的对象class
             //获取组合name
-            String sqlStr = "SELECT CONCAT(LOGINNAME,'.',devcoding) AS LOGINNAME FROM userinfo WHERE Userorg like '"+orgcode+"%' AND " +
+            /*String sqlStr = "SELECT CONCAT(LOGINNAME,'.',devcoding) AS LOGINNAME FROM userinfo WHERE Userorg like '"+orgcode+"%' AND " +
                     "LOGINNAME='"+username+"' AND deleteflag=0 AND usertype=1";
-            String nameConcat = (String) template.queryForObject(sqlStr,java.lang.String.class);
+            String nameConcat = (String) template.queryForObject(sqlStr,java.lang.String.class);*/
             //String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
             //String nameConcat = username+".hz";
+            String nameConcat = username+"."+devcoding;
             logger.info("易和接入nameConcat："+nameConcat);
             IdmConfigUtil.getInstance();
             Prop prop = IDMConfig.getProp(IdmConfigUtil.IDM_KEY_GOV);

@@ -26,9 +26,19 @@ public class UsernamePasswordCaptchaCredential extends RememberMeUsernamePasswor
         return orgcode;
     }
 
-
     public void setOrgcode(String orgcode) {
         this.orgcode = orgcode;
+    }
+
+    //组织域名 (如:公安厅gat.zj)
+    private String devcoding;
+
+    public String getDevcoding() {
+        return devcoding;
+    }
+
+    public void setDevcoding(String devcoding) {
+        this.devcoding = devcoding;
     }
 
 

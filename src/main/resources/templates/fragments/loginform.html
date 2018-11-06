@@ -78,6 +78,11 @@
                                 </p>
                             </span>
                             </div>
+                            <div style="position: absolute;margin-top:0px;left:20px ;z-index: 99999;width: 90%">
+                                <div id="menuContent" class="menuContent" style="display:none;">
+                                    <ul id="treeDemo" class="ztree" style="margin-top:0; min-height:55px;max-height:250px;height: auto;width:100%;"></ul>
+                                </div>
+                            </div>
                         </section>
                         <section class="form-group">
                             <!--<label for="password" th:utext="#{screen.welcome.label.password}">Password</label>-->
@@ -171,10 +176,6 @@
                         <span th:utext="#{screen.pm.button.registeruser}"></span>
                         <span th:utext="#{screen.pm.button.forgotpwd}"></span>
                         <p/>
-                    </div>
-
-                    <div id="menuContent" class="menuContent" style="display:none; position: fixed;z-index: 99999">
-                        <ul id="treeDemo" class="ztree" style="margin-top:0; width:330px; min-height:55px;max-height:250px;height: auto;"></ul>
                     </div>
 
                     <script type="text/javascript" th:inline="javascript">

@@ -169,11 +169,12 @@
                     <artifactId>mysql-connector-java</artifactId>
                     <version>5.1.34</version>
                 </dependency>
-                <!--<dependency>
+                <!--redis支持-->
+                <dependency>
                     <groupId>org.apereo.cas</groupId>
                     <artifactId>cas-server-support-redis-ticket-registry</artifactId>
                     <version>${cas.version}</version>
-                </dependency>-->
+                </dependency>
                 <!--添加json服务注册支持 添加后服务无法认证-->
                 <!--<dependency>
                     <groupId>org.apereo.cas</groupId>

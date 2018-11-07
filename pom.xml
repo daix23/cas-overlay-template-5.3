@@ -231,7 +231,13 @@
                     <artifactId>gson</artifactId>
                     <version>1.7.1</version>
                 </dependency>-->
-
+                <!--Oauth2.0 start-->
+                <dependency>
+                    <groupId>org.apereo.cas</groupId>
+                    <artifactId>cas-server-support-oauth-webflow</artifactId>
+                    <version>${cas.version}</version>
+                </dependency>
+                <!--Oauth2.0 end-->
             </dependencies>
         </profile>
 

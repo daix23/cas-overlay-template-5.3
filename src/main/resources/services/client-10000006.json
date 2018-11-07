@@ -1,0 +1,22 @@
+{
+  "@class" : "org.apereo.cas.services.RegexRegisteredService",
+  "serviceId" : "^http://126.33.10.60:8081/client.*",
+  "name" : "client",
+  "theme" : "iframe",
+  "id" : 10000006,
+  "description" : "casClient service",
+  "evaluationOrder" : 1,
+  "attributeReleasePolicy" : {
+    "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"
+  },
+  "accessStrategy" : {
+    "@class" : "org.apereo.cas.services.DefaultRegisteredServiceAccessStrategy",
+    "enabled" : true,
+    "ssoEnabled" : true,
+    "unauthorizedRedirectUrl" : "http://126.33.10.60:8080/cas",
+    "requiredAttributes" : {
+      "@class" : "java.util.HashMap",
+      "loginname" : [ "java.util.HashSet", [ "fbdw"] ]
+    }
+  }
+}

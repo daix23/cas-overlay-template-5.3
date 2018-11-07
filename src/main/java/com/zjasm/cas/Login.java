@@ -189,13 +189,22 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         return handlerResult;
     }
 
+    /**
+     * 多属性返回
+     * @param attributes
+     * @param username
+     * @param user
+     * @param mycredential1
+     * @param orgcode
+     * @return
+     */
     public AuthenticationHandlerExecutionResult authOkResult(ServletRequestAttributes attributes,
                                                              String username,Map<String,Object> user,
                                                              UsernamePasswordCaptchaCredential mycredential1,String orgcode){
         HttpSession session = attributes.getRequest().getSession();
         session.setAttribute("username", username);
         //返回多属性
-        JdbcPrincipalAttributesProperties jdbcAttrs = casProperties.getAuthn().getAttributeRepository().getJdbc().get(0);
+        /*JdbcPrincipalAttributesProperties jdbcAttrs = casProperties.getAuthn().getAttributeRepository().getJdbc().get(0);
         Map<String, Object> map=new HashMap<>();
         Map<String, String> attrMap =  jdbcAttrs.getAttributes();
         for (String str : attrMap.keySet()) {
@@ -205,7 +214,8 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         }
         //多返回一个orgcode参数
         map.put("orgcode", orgcode);
-        return createHandlerResult(mycredential1, principalFactory.createPrincipal(username, map), null);
+        return createHandlerResult(mycredential1, principalFactory.createPrincipal(username, map), null);*/
+        return createHandlerResult(mycredential1, principalFactory.createPrincipal(username), null);
     }
 
 

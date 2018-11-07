@@ -1,6 +1,6 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^http://126.33.50.237:8080/casClient.*",
+  "serviceId" : "^http://126.33.10.60:8081/casClient.*",
   "name" : "casClient",
   "theme" : "iframe",
   "id" : 10000006,

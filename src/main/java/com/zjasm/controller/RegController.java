@@ -233,7 +233,11 @@ public class RegController {
             e.printStackTrace();
         }finally {
             String service = request.getParameter("service");
-            response.sendRedirect("logout?service="+service);
+            if(service==null){
+                response.sendRedirect("logout");
+            }else{
+                response.sendRedirect("logout?service="+service);
+            }
         }
     }
 

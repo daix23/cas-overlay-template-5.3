@@ -16,7 +16,7 @@
     "unauthorizedRedirectUrl" : "http://126.33.10.60:8080/cas",
     "requiredAttributes" : {
       "@class" : "java.util.HashMap",
-      "loginname" : [ "java.util.HashSet", [ "fbdw"] ]
+      "authsys_multi" : [ "java.util.HashSet", [ "http://126.33.10.60:8081/client"] ]
     }
   }
 }

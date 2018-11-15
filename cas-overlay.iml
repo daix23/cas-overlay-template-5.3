@@ -193,8 +193,6 @@
     <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-logout:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.jasig.cas.client:cas-client-core:3.5.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services-api:5.3.2" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-authentication-attributes:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-support-redis-core:5.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-support-rest:5.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-api-throttle:5.3.2" level="project" />
@@ -279,5 +277,9 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-support-throttle:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-services-registry:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-support-oauth-services:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-support-jpa-service-registry:5.3.2" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-support-jpa-util:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-services-api:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-authentication-attributes:5.3.2" level="project" />
   </component>
 </module>

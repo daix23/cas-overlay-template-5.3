@@ -1,10 +1,12 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^http://126.33.50.237:8809/cas-management.*",
-  "name" : "casManagement",
+  "serviceId" : "^http://126.33.10.60:8081/management.*",
+  "name" : "management",
   "theme" : "apereo",
   "id" : 10000005,
   "description" : "casManagement service",
+  "logoutType" : "BACK_CHANNEL",
+  "logoutUrl" : "http://126.33.10.60:8080/cas/logout",
   "evaluationOrder" : 1,
   "attributeReleasePolicy" : {
     "@class" : "org.apereo.cas.services.ReturnAllAttributeReleasePolicy"

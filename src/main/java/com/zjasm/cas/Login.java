@@ -7,6 +7,7 @@ import com.commnetsoft.model.IdValidationResult;
 import com.zjasm.captcha.UsernamePasswordCaptchaCredential;
 import com.zjasm.exception.InvalidCaptchaException;
 import com.zjasm.exception.NoAuthException;
+import com.zjasm.util.Dbutil;
 import com.zjasm.util.IdmConfigUtil;
 import com.zjasm.util.PropertiesLoaderUtil;
 import org.apereo.cas.authentication.Credential;
@@ -62,17 +63,11 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             throw new InvalidCaptchaException("验证码不正确");
         }
 
-        DriverManagerDataSource d=new DriverManagerDataSource();
         List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
         QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
         QueryJdbcAuthenticationProperties jdbcPros1 = jdbcProsList.get(1);
-        d.setDriverClassName(jdbcPros.getDriverClass());
-        d.setUrl(jdbcPros.getUrl());
-        d.setUsername(jdbcPros.getUser());
-        d.setPassword(jdbcPros.getPassword());
-        JdbcTemplate template=new JdbcTemplate();
-        template.setDataSource(d);
-
+        //自定义操作库
+        JdbcTemplate template = Dbutil.getInstance();
         //获取服务的子系统链接service
         String serviceStr = attributes.getRequest().getParameter("service");
         //判断用户是否属于该系统

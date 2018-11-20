@@ -10,21 +10,22 @@ import com.commnetsoft.util.ParameterUtil;
 import com.commnetsoft.util.ServiceUtil;
 import com.commnetsoft.util.StrHelper;
 import com.zjasm.captcha.CaptchaUtil;
-import com.zjasm.util.CommonUtil;
-import com.zjasm.util.HttpRequestUtil;
-import com.zjasm.util.IdmConfigUtil;
-import com.zjasm.util.PropertiesLoaderUtil;
+import com.zjasm.model.ReturnMessage;
+import com.zjasm.util.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
+import org.apereo.cas.services.RegexRegisteredService;
+import org.apereo.cas.services.ReturnAllAttributeReleasePolicy;
+import org.apereo.cas.services.ServicesManager;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -136,16 +137,10 @@ public class RegController {
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
-        DriverManagerDataSource d=new DriverManagerDataSource();
         List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
-        QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
         QueryJdbcAuthenticationProperties jdbcPros1 = jdbcProsList.get(1);
-        d.setDriverClassName(jdbcPros.getDriverClass());
-        d.setUrl(jdbcPros.getUrl());
-        d.setUsername(jdbcPros.getUser());
-        d.setPassword(jdbcPros.getPassword());
-        JdbcTemplate template=new JdbcTemplate();
-        template.setDataSource(d);
+        //自定义操作库
+        JdbcTemplate template = Dbutil.getInstance();
         final List listSiteDomain = template.queryForList(jdbcPros1.getSql(),username);
         HashMap<String, Object> jsonObj = new HashMap<String, Object>();
         jsonObj.put("items", listSiteDomain);
@@ -176,15 +171,8 @@ public class RegController {
         }
         sb.append(" ORDER BY orderby ASC");
         String sql = sb.toString();
-        DriverManagerDataSource d=new DriverManagerDataSource();
-        List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
-        QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
-        d.setDriverClassName(jdbcPros.getDriverClass());
-        d.setUrl(jdbcPros.getUrl());
-        d.setUsername(jdbcPros.getUser());
-        d.setPassword(jdbcPros.getPassword());
-        JdbcTemplate template=new JdbcTemplate();
-        template.setDataSource(d);
+        //自定义操作库
+        JdbcTemplate template = Dbutil.getInstance();
         List list = template.queryForList(sql);
         HashMap<String, Object> jsonObj = new HashMap<String, Object>();
         jsonObj.put("result", list);
@@ -241,5 +229,87 @@ public class RegController {
         }
     }
 
+    @Autowired
+    @Qualifier("servicesManager")
+    private ServicesManager servicesManager;
+
+    /**
+     * 注册service
+     * @param serviceId 服务名
+     * @return
+     */
+    @GetMapping(value = "addService")
+    public Object addService(HttpServletRequest request, HttpServletResponse response) {
+        String serviceId = request.getParameter("serviceId");
+        ReturnMessage returnMessage = new ReturnMessage();
+        if(serviceId==null){
+            logger.error("注册service异常,serviceId不能为空");
+            returnMessage.setCode(500);
+            returnMessage.setMessage("添加失败,serviceId不能为空");
+        }else{
+            try {
+                String ss="^(https|imaps|http)://"+serviceId+".*";
+                RegexRegisteredService service = new RegexRegisteredService();
+                ReturnAllAttributeReleasePolicy re = new ReturnAllAttributeReleasePolicy();
+                service.setServiceId(ss);
+                service.setEvaluationOrder(1);
+                service.setTheme("apereo");
+                service.setAttributeReleasePolicy(re);
+                service.setName(serviceId);
+                //这个是为了单点登出而作用的
+                //service.setLogoutUrl(new URL("http://"+serviceId));
+                servicesManager.save(service);
+                //执行load让他生效
+                servicesManager.load();
+                returnMessage.setCode(200);
+                returnMessage.setMessage("添加成功");
+            } catch (Exception e) {
+                logger.error("注册service异常",e);
+                returnMessage.setCode(500);
+                returnMessage.setMessage("添加失败");
+            }
+        }
+        return returnMessage;
+    }
+
+    /**
+     * 删除service异常
+     * @param serviceId
+     * @return
+     */
+    @GetMapping(value = "delService")
+    public Object delService(HttpServletRequest request, HttpServletResponse response) {
+        String serviceId = request.getParameter("serviceId");
+        ReturnMessage returnMessage = new ReturnMessage();
+        if(serviceId==null){
+            logger.error("删除service异常,serviceId不能为空");
+            returnMessage.setCode(500);
+            returnMessage.setMessage("删除失败,serviceId不能为空");
+        }else{
+            try {
+                String ss="^(https|imaps|http)://"+serviceId+".*";
+                //RegisteredService service = servicesManager.findServiceBy(a);
+                //servicesManager.delete(service);//java.lang.IllegalArgumentException: ‘actionPerformed’ cannot be null.
+                //自定义操作库删除
+                JdbcTemplate template = Dbutil.getInstance();
+                String sql = "delete from regexregisteredservice where serviceId='"+ss+"'";
+                int ii= template.update(sql);
+                //执行load生效
+                servicesManager.load();
+                if(ii>=1){
+                    returnMessage.setCode(200);
+                    returnMessage.setMessage("删除成功");
+                }else{
+                    returnMessage.setCode(404);
+                    returnMessage.setMessage("删除失败，未找到此service");
+                }
+            } catch (Exception e) {
+                logger.error("删除service异常",e);
+                returnMessage.setCode(500);
+                returnMessage.setMessage("删除失败");
+            }
+        }
+        return returnMessage;
+    }
 
 }

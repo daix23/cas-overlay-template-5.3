@@ -9,35 +9,42 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.util.List;
 
-
-@EnableConfigurationProperties(CasConfigurationProperties.class)
 public class Dbutil {
+    private static JdbcTemplate template = null;
 
-    private Dbutil(){}
-
-    @Autowired
-    private static CasConfigurationProperties casProperties;
-
-    /*
-     * 定义静态方法，返回数据库的连接对象
+    /**
+     * 获取唯一实例
+     * @return
      */
-    public static JdbcTemplate getJdbcTemplate(){
-        JdbcTemplate template = null;
+    public static JdbcTemplate getInstance(){
+        if(template==null){
+            synchronized (Dbutil.class){
+                if(template==null){
+                    template = newJdbcT();
+                }
+            }
+        }
+        return template;
+    }
+
+
+    /**
+     * 构造方法
+     */
+    private static  JdbcTemplate newJdbcT(){
+        template=new JdbcTemplate();
         try {
             DriverManagerDataSource d=new DriverManagerDataSource();
-            List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
-            QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
-            d.setDriverClassName(jdbcPros.getDriverClass());
-            d.setUrl(jdbcPros.getUrl());
-            d.setUsername(jdbcPros.getUser());
-            d.setPassword(jdbcPros.getPassword());
-            template=new JdbcTemplate();
+            AppliProUtil plu = AppliProUtil.getInstance();
+            d.setDriverClassName(plu.getOneProp("cas.authn.jdbc.query[0].driverClass"));
+            d.setUrl(plu.getOneProp("cas.authn.jdbc.query[0].url"));
+            d.setUsername(plu.getOneProp("cas.authn.jdbc.query[0].user"));
+            d.setPassword(plu.getOneProp("cas.authn.jdbc.query[0].password"));
             template.setDataSource(d);
         } catch (Exception ex) {
             throw new RuntimeException(ex+"数据库连接失败！");
         }
         return template;
     }
-
 
 }

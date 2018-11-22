@@ -71,7 +71,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         //获取服务的子系统链接service
         String serviceStr = attributes.getRequest().getParameter("service");
         //判断用户是否属于该系统
-        if(serviceStr!=""&&serviceStr!=null){
+        /*if(serviceStr!=""&&serviceStr!=null){
             final List listSiteDomain = template.queryForList(jdbcPros1.getSql(),mycredential1.getUsername());
             if(listSiteDomain!=null&&!listSiteDomain.isEmpty()){
                 for(int i=0;i<listSiteDomain.size();i++) {
@@ -88,7 +88,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                 mycredential1.setPassword("");//验证码错误，暂时无法登录处理，不然会凭借正确的用户名密码直接登录
                 throw new NoAuthException("此用户无权限访问此系统");
             }
-        }
+        }*/
 
 
         String username=mycredential1.getUsername();

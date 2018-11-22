@@ -15,6 +15,7 @@ import com.zjasm.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
+import org.apereo.cas.services.DefaultRegisteredServiceAccessStrategy;
 import org.apereo.cas.services.RegexRegisteredService;
 import org.apereo.cas.services.ReturnAllAttributeReleasePolicy;
 import org.apereo.cas.services.ServicesManager;
@@ -31,9 +32,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.util.*;
 
 @RestController
 @EnableConfigurationProperties(CasConfigurationProperties.class)
@@ -251,6 +251,22 @@ public class RegController {
                 String ss="^(https|imaps|http)://"+serviceId+".*";
                 RegexRegisteredService service = new RegexRegisteredService();
                 ReturnAllAttributeReleasePolicy re = new ReturnAllAttributeReleasePolicy();
+                //服务访问控制https://apereo.github.io/cas/5.3.x/installation/Configuring-Service-Access-Strategy.html
+                DefaultRegisteredServiceAccessStrategy drsas = new DefaultRegisteredServiceAccessStrategy();
+                drsas.setEnabled(true);
+                drsas.setSsoEnabled(true);
+                AppliProUtil appliProUtil = AppliProUtil.getInstance();
+                String sname = appliProUtil.getOneProp("cas.server.name");
+                String sprefix = appliProUtil.getOneProp("cas.server.prefix");
+                String reUrl = sprefix.replace("${cas.server.name}",sname);
+                drsas.setUnauthorizedRedirectUrl(new URI(reUrl));
+                Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+                Set<String> setStr = new HashSet<String>();
+                setStr.add("http://"+serviceId);
+                map.put("authsys_multi",setStr);
+                drsas.setRequiredAttributes(map);
+                service.setAccessStrategy(drsas);
+
                 service.setServiceId(ss);
                 service.setEvaluationOrder(1);
                 service.setTheme("apereo");

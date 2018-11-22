@@ -7,9 +7,34 @@
 
     <title th:text="#{screen.success.header}">Generic Success View</title>
     <script th:inline="javascript">
+
+        function get_cookie(Name) {
+            var search = Name + "="//查询检索的值
+            var returnvalue = "";//返回值
+            if (document.cookie.length > 0) {
+                //debugger;
+                sd = document.cookie.indexOf(search);
+                if (sd!= -1) {
+                    sd += search.length;
+                    end = document.cookie.indexOf(";", sd);
+                    if (end == -1)
+                        end = document.cookie.length;
+                    //unescape() 函数可对通过 escape() 编码的字符串进行解码。
+                    returnvalue=unescape(document.cookie.substring(sd, end))
+                }
+            }
+            return returnvalue;
+        }
+
+
         function goSysUrl(){
+            var tgt = get_cookie("TGC");
+            //alert(tgt);
             var casSysUrl = document.getElementById("casSysUrl").value;
+            //window.location.href = casSysUrl+"?TGC="+tgt;
             window.location.href = casSysUrl;
+            //window.location.href = "http://126.33.10.60:8080/cas/oauth2.0/authorize?response_type=code&client_id=20181107&redirect_uri="+casSysUrl;
+
         }
     </script>
 </head>

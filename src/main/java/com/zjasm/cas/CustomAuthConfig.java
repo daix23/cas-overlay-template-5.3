@@ -23,9 +23,13 @@ public class CustomAuthConfig implements AuthenticationEventExecutionPlanConfigu
     @Qualifier("servicesManager")
     private ServicesManager servicesManager;
 
+    /**
+     * 放到 shiro(order=10) 验证器的前面 先验证验证码
+     * @return
+     */
     @Bean
     public AuthenticationHandler myAuthenticationHandler() {
-        final Login handler = new Login(Login.class.getSimpleName(), servicesManager, new DefaultPrincipalFactory(), 10);
+        final Login handler = new Login(Login.class.getSimpleName(), servicesManager, new DefaultPrincipalFactory(), 9);
         return handler;
     }
 

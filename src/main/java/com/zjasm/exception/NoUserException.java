@@ -2,13 +2,12 @@ package com.zjasm.exception;
 
 import javax.security.auth.login.AccountException;
 
-public class InvalidCaptchaException extends AccountException {
-
+public class NoUserException extends AccountException {
     /**
      * Constructs a FailedLoginException with no detail message. A detail
      * message is a String that describes this particular exception.
      */
-    public InvalidCaptchaException() {
+    public NoUserException() {
         super();
     }
 
@@ -21,7 +20,7 @@ public class InvalidCaptchaException extends AccountException {
      *
      * @param msg the detail message.
      */
-    public InvalidCaptchaException(String msg) {
+    public NoUserException(String msg) {
         super(msg);
     }
 }

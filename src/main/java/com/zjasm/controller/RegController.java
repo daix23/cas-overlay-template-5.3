@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,10 +50,12 @@ public class RegController {
     public final static String IDM_KEY_GOV = "idm_gov";
 
 
-    @GetMapping("test")
-    public String test(){
+    /*@GetMapping("test")
+    public String test(HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         return "Hello World!";
-    }
+    }*/
 
 
     @GetMapping(value = "captcha")

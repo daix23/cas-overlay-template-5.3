@@ -6,7 +6,9 @@ import com.commnetsoft.Prop;
 import com.commnetsoft.model.IdValidationResult;
 import com.zjasm.captcha.UsernamePasswordCaptchaCredential;
 import com.zjasm.exception.InvalidCaptchaException;
+import com.zjasm.exception.InvalidPasswordException;
 import com.zjasm.exception.NoAuthException;
+import com.zjasm.exception.NoUserException;
 import com.zjasm.util.Dbutil;
 import com.zjasm.util.IdmConfigUtil;
 import com.zjasm.util.PropertiesLoaderUtil;
@@ -53,14 +55,15 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
     @Override
     protected AuthenticationHandlerExecutionResult doAuthentication(Credential credential) throws GeneralSecurityException, PreventedException {
         UsernamePasswordCaptchaCredential mycredential1 = (UsernamePasswordCaptchaCredential) credential;
+        AuthenticationHandlerExecutionResult handlerResult = null;
         String captcha = mycredential1.getCaptcha();
         String orgcode = mycredential1.getOrgcode();
         String devcoding = mycredential1.getDevcoding();//组织域名
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         String right = attributes.getRequest().getSession().getAttribute("captcha").toString();
         if(!captcha.equalsIgnoreCase(right)){
-            mycredential1.setPassword("");//验证码错误，暂时无法登录处理，不然会凭借正确的用户名密码直接登录
-            throw new InvalidCaptchaException("验证码不正确");
+            mycredential1.setPassword("!@#$%^!@#$%");//验证码错误，暂时无法登录处理，不然会凭借正确的用户名密码直接登录
+            throw new InvalidCaptchaException("验证码错误！");
         }
 
         List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
@@ -80,13 +83,13 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         break;
                     }
                     if(i==listSiteDomain.size()-1){
-                        mycredential1.setPassword("");//验证码错误，暂时无法登录处理，不然会凭借正确的用户名密码直接登录
-                        throw new NoAuthException("此用户无权限访问此系统");
+                        mycredential1.setPassword("!@#$%^!@#$%");
+                        throw new NoAuthException("无权限访问！");
                     }
                 }
             }else {
-                mycredential1.setPassword("");//验证码错误，暂时无法登录处理，不然会凭借正确的用户名密码直接登录
-                throw new NoAuthException("此用户无权限访问此系统");
+                mycredential1.setPassword("!@#$%^!@#$%");
+                throw new NoAuthException("无权限访问！");
             }
         }*/
 
@@ -95,13 +98,13 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         String pwdStr = mycredential1.getPassword();
 
         //查询数据库加密的的密码
-        Map<String,Object> user = template.queryForMap(jdbcPros.getSql(), username);
-
-        if(user==null){
-            mycredential1.setPassword("");
-            throw new FailedLoginException("没有该用户");
+        Map<String,Object> user = null;
+        try {
+            user = template.queryForMap(jdbcPros.getSql(), username);
+        }catch (Exception e){
+            mycredential1.setPassword("!@#$%^!@#$%");
+            throw new NoUserException("用户不存在！");
         }
-        AuthenticationHandlerExecutionResult handlerResult = null;
         //获取验证开关
         PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
         boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
@@ -121,14 +124,14 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         params.getDatatype());
                 if("".equals(resultStr)){
                     String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
-                    mycredential1.setPassword("");
+                    mycredential1.setPassword("!@#$%^!@#$%");
                     throw new NoAuthException(msg);
                 }else{
                     JSONObject verifyResult = JSON.parseObject(resultStr);
                     if (verifyResult.getString("result").equals("0")) {
                         //易和验证成功
                     }else{
-                        mycredential1.setPassword("");
+                        mycredential1.setPassword("!@#$%^!@#$%");
                         throw new NoAuthException("msg");
                     }
                 }*/
@@ -163,7 +166,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             }else {
                 String errmsg = idValiResult.getErrmsg();
                 logger.info("易和用户登录失败："+errmsg);
-                mycredential1.setPassword("");
+                mycredential1.setPassword("!@#$%^!@#$%");
                 throw new NoAuthException(errmsg);
             }
         }else{//本地验证
@@ -177,8 +180,8 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             if(pwd.equals(user.get(jdbcPros.getFieldPassword()).toString())){
                 handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
             }else{
-                mycredential1.setPassword("");
-                throw new FailedLoginException("用户名或密码不正确");
+                mycredential1.setPassword("!@#$%^!@#$%");
+                throw new InvalidPasswordException("密码错误！");
             }
         }
         return handlerResult;

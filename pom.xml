@@ -255,6 +255,12 @@
                     <version>${cas.version}</version>
                 </dependency>
                 <!-- 添加将services存储到数据库中end -->
+                <!-- Redis NoSQL 操作依赖 -->
+                <dependency>
+                    <groupId>redis.clients</groupId>
+                    <artifactId>jedis</artifactId>
+                    <version>2.9.0</version>
+                </dependency>
             </dependencies>
         </profile>
 

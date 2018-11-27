@@ -32,6 +32,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.FailedLoginException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -61,6 +62,15 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         String devcoding = mycredential1.getDevcoding();//组织域名
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         String right = attributes.getRequest().getSession().getAttribute("captcha").toString();
+        //跨域问题
+        /*HttpServletResponse response = attributes.getResponse();
+        response.setHeader("Access-Control-Allow-Origin", "*"); //解决跨域访问报错
+        response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
+        response.setHeader("Access-Control-Max-Age", "3600"); //设置过期时间
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, client_id, uuid, Authorization");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // 支持HTTP 1.1.
+        response.setHeader("Pragma", "no-cache"); // 支持HTTP 1.0. response.setHeader("Expires", "0");*/
+
         if(!captcha.equalsIgnoreCase(right)){
             mycredential1.setPassword("!@#$%^!@#$%");//验证码错误，暂时无法登录处理，不然会凭借正确的用户名密码直接登录
             throw new InvalidCaptchaException("验证码错误！");

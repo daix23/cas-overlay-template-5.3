@@ -185,7 +185,6 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.springframework.data:spring-data-redis:1.8.13.RELEASE" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.springframework.data:spring-data-keyvalue:1.2.13.RELEASE" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.springframework:spring-oxm:4.3.18.RELEASE" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: redis.clients:jedis:2.9.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-logging:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-logging-config:5.3.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-core-cookie-api:5.3.2" level="project" />
@@ -281,5 +280,6 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apereo.cas:cas-server-support-jpa-util:5.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-services-api:5.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apereo.cas:cas-server-core-authentication-attributes:5.3.2" level="project" />
+    <orderEntry type="library" name="Maven: redis.clients:jedis:2.9.0" level="project" />
   </component>
 </module>

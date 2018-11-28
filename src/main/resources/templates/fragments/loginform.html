@@ -13,12 +13,11 @@
     <div class="row">
         <div class="col-md">
             <!-- Login form template begins here -->
-            <div th:fragment="loginform" class="card" style="position: fixed;right:50px;">
-                <div class="card-header text-center">
+            <div th:fragment="loginform" class="card" style="position: fixed;right:3%;">
+                <div class="card-header text-left">
                     <!--<h2 th:text="#{cas.login.pagetitle}">Login</h2>-->
-                    <span class="fa-stack fa-1x hidden-xs">
-                      <i class="fa fa-circle fa-stack-2x"></i>
-                      <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
+                    <span class="font-weight-normal">
+                      用户登录 User Login
                     </span>
                 </div>
                 <div class="card-body" style="padding-bottom:0.25rem;">
@@ -130,9 +129,9 @@
                         </section>
 
                         <section class="form-check" style="padding-left: 0px;margin-top: -5px;margin-bottom: -10px;">
-                            <p>
+                            <p class="fontWR">
                                 <input type="checkbox" name="rememberMe" id="rememberMe" value="true" tabindex="5"/>
-                                <label for="rememberMe" th:text="#{screen.rememberme.checkbox.title}"></label>
+                                <label style="margin-left: 5px;" for="rememberMe" th:text="#{screen.rememberme.checkbox.title}"></label>
                             </p>
                         </section>
 
@@ -171,9 +170,10 @@
                         <p/>
                     </form>
 
-                    <div th:unless="${passwordManagementEnabled}">
-                        <span class="fa fa-question-circle"></span>
+                    <div th:unless="${passwordManagementEnabled}" class="fontWR">
+                        <span class="fa fa-question-circle" style="color: #63B8FF"></span>
                         <span th:utext="#{screen.pm.button.registeruser}"></span>
+                        &nbsp;|&nbsp;
                         <span th:utext="#{screen.pm.button.forgotpwd}"></span>
                         <p/>
                     </div>

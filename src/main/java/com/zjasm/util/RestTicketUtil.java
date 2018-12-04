@@ -66,10 +66,11 @@ public class RestTicketUtil {
     public static void main(String[] args) {
 
         try {
-            String tgt = getTGT("fbdw", "123456");
-            //String tgt="TGT-1-n2b31eB3mhL3Z9SgEtsqOk7far60t5u8YoTQRzi2omNV-EzCzGtKjvAb93AW-jctSHADell-pc";
+            //String tgt = getTGT("fbdw", "123456");
+            String tgt="TGT-1-YLqlZ-Jb4TN4V8VXu0bZUw47cSZfB5v-H4CI-6y0Vu3n6W3MrgHGjBaNvE388JrYKnIDell-pc";
             System.out.println("TGT：" + tgt);
             String service = "http://118.178.118.176:6702/platform-main/index.html";
+            //String service = "http://126.33.10.60:8081/client/";//注意最后的“/”,否则“票据不符合目标服务”
             String st = getST(tgt, service);
             System.out.println("ST：" + st);
             //getUsernameSeviceTicket(service,st);

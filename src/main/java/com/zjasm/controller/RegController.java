@@ -246,48 +246,66 @@ public class RegController {
     public Object addService(HttpServletRequest request, HttpServletResponse response) {
         String serviceId = request.getParameter("serviceId");
         ReturnMessage returnMessage = new ReturnMessage();
-        if(serviceId==null){
-            logger.error("注册service异常,serviceId不能为空");
-            returnMessage.setCode(500);
-            returnMessage.setMessage("添加失败,serviceId不能为空");
-        }else{
-            try {
-                String ss="^(https|imaps|http)://"+serviceId+".*";
-                RegexRegisteredService service = new RegexRegisteredService();
-                ReturnAllAttributeReleasePolicy re = new ReturnAllAttributeReleasePolicy();
-                //服务访问控制https://apereo.github.io/cas/5.3.x/installation/Configuring-Service-Access-Strategy.html
-                DefaultRegisteredServiceAccessStrategy drsas = new DefaultRegisteredServiceAccessStrategy();
-                drsas.setEnabled(true);
-                drsas.setSsoEnabled(true);
-                AppliProUtil appliProUtil = AppliProUtil.getInstance();
-                String sname = appliProUtil.getOneProp("cas.server.name");
-                String sprefix = appliProUtil.getOneProp("cas.server.prefix");
-                String reUrl = sprefix.replace("${cas.server.name}",sname);
-                drsas.setUnauthorizedRedirectUrl(new URI(reUrl));
-                Map<String, Set<String>> map = new HashMap<String, Set<String>>();
-                Set<String> setStr = new HashSet<String>();
-                setStr.add("http://"+serviceId);
-                map.put("authsys_multi",setStr);
-                drsas.setRequiredAttributes(map);
-                service.setAccessStrategy(drsas);
+        //通过请求ip安全防护接口
+        boolean flag = ipCheck(request);
+        if(flag){
+            if(serviceId==null){
+                logger.error("注册service异常,serviceId不能为空");
+                returnMessage.setCode(501);
+                returnMessage.setMessage("添加失败,serviceId不能为空");
+            }else{
+                try {
+                    String ss="^(https|imaps|http)://"+serviceId+".*";
+                    //判断是否重复
+                    JdbcTemplate template = Dbutil.getInstance();
+                    String sql = "select count(1) from regexregisteredservice where serviceId='"+ss+"'";
+                    int ii= template.queryForObject(sql,Integer.class);
+                    if(ii>0){
+                        logger.error("注册service异常,serviceId已存在");
+                        returnMessage.setCode(503);
+                        returnMessage.setMessage("添加失败,serviceId已存在");
+                    }else{
+                        RegexRegisteredService service = new RegexRegisteredService();
+                        ReturnAllAttributeReleasePolicy re = new ReturnAllAttributeReleasePolicy();
+                        //服务访问控制https://apereo.github.io/cas/5.3.x/installation/Configuring-Service-Access-Strategy.html
+                        DefaultRegisteredServiceAccessStrategy drsas = new DefaultRegisteredServiceAccessStrategy();
+                        drsas.setEnabled(true);
+                        drsas.setSsoEnabled(true);
+                        AppliProUtil appliProUtil = AppliProUtil.getInstance();
+                        String sname = appliProUtil.getOneProp("cas.server.name");
+                        String sprefix = appliProUtil.getOneProp("cas.server.prefix");
+                        String reUrl = sprefix.replace("${cas.server.name}",sname);
+                        drsas.setUnauthorizedRedirectUrl(new URI(reUrl));
+                        Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+                        Set<String> setStr = new HashSet<String>();
+                        setStr.add("http://"+serviceId);
+                        map.put("authsys_multi",setStr);
+                        drsas.setRequiredAttributes(map);
+                        service.setAccessStrategy(drsas);
 
-                service.setServiceId(ss);
-                service.setEvaluationOrder(1);
-                service.setTheme("apereo");
-                service.setAttributeReleasePolicy(re);
-                service.setName(serviceId);
-                //这个是为了单点登出而作用的
-                //service.setLogoutUrl(new URL("http://"+serviceId));
-                servicesManager.save(service);
-                //执行load让他生效
-                servicesManager.load();
-                returnMessage.setCode(200);
-                returnMessage.setMessage("添加成功");
-            } catch (Exception e) {
-                logger.error("注册service异常",e);
-                returnMessage.setCode(500);
-                returnMessage.setMessage("添加失败");
+                        service.setServiceId(ss);
+                        service.setEvaluationOrder(1);
+                        service.setTheme("apereo");
+                        service.setAttributeReleasePolicy(re);
+                        service.setName(serviceId);
+                        //这个是为了单点登出而作用的
+                        //service.setLogoutUrl(new URL("http://"+serviceId));
+                        servicesManager.save(service);
+                        //执行load让他生效
+                        servicesManager.load();
+                        returnMessage.setCode(200);
+                        returnMessage.setMessage("添加成功");
+                    }
+                } catch (Exception e) {
+                    logger.error("注册service异常",e);
+                    returnMessage.setCode(500);
+                    returnMessage.setMessage("添加失败,注册service异常");
+                }
             }
+        }else{
+            logger.error("注册service异常,非法请求");
+            returnMessage.setCode(502);
+            returnMessage.setMessage("添加失败,非法请求");
         }
         return returnMessage;
     }
@@ -301,35 +319,70 @@ public class RegController {
     public Object delService(HttpServletRequest request, HttpServletResponse response) {
         String serviceId = request.getParameter("serviceId");
         ReturnMessage returnMessage = new ReturnMessage();
-        if(serviceId==null){
-            logger.error("删除service异常,serviceId不能为空");
-            returnMessage.setCode(500);
-            returnMessage.setMessage("删除失败,serviceId不能为空");
-        }else{
-            try {
-                String ss="^(https|imaps|http)://"+serviceId+".*";
-                //RegisteredService service = servicesManager.findServiceBy(a);
-                //servicesManager.delete(service);//java.lang.IllegalArgumentException: ‘actionPerformed’ cannot be null.
-                //自定义操作库删除
-                JdbcTemplate template = Dbutil.getInstance();
-                String sql = "delete from regexregisteredservice where serviceId='"+ss+"'";
-                int ii= template.update(sql);
-                //执行load生效
-                servicesManager.load();
-                if(ii>=1){
-                    returnMessage.setCode(200);
-                    returnMessage.setMessage("删除成功");
-                }else{
-                    returnMessage.setCode(404);
-                    returnMessage.setMessage("删除失败，未找到此service");
+        //通过请求ip安全防护接口
+        boolean flag = ipCheck(request);
+        if(flag){
+            if(serviceId==null){
+                logger.error("删除service异常,serviceId不能为空");
+                returnMessage.setCode(501);
+                returnMessage.setMessage("删除失败,serviceId不能为空");
+            }else{
+                try {
+                    String ss="^(https|imaps|http)://"+serviceId+".*";
+                    //RegisteredService service = servicesManager.findServiceBy(a);
+                    //servicesManager.delete(service);//java.lang.IllegalArgumentException: ‘actionPerformed’ cannot be null.
+                    //自定义操作库删除
+                    JdbcTemplate template = Dbutil.getInstance();
+                    String sql = "delete from regexregisteredservice where serviceId='"+ss+"'";
+                    int ii= template.update(sql);
+                    //执行load生效
+                    servicesManager.load();
+                    if(ii>=1){
+                        returnMessage.setCode(200);
+                        returnMessage.setMessage("删除成功");
+                    }else{
+                        returnMessage.setCode(404);
+                        returnMessage.setMessage("删除失败,未找到此service");
+                    }
+                } catch (Exception e) {
+                    logger.error("删除service异常",e);
+                    returnMessage.setCode(500);
+                    returnMessage.setMessage("删除失败,删除service异常");
                 }
-            } catch (Exception e) {
-                logger.error("删除service异常",e);
-                returnMessage.setCode(500);
-                returnMessage.setMessage("删除失败");
             }
+        }else{
+            logger.error("删除service异常,非法请求");
+            returnMessage.setCode(502);
+            returnMessage.setMessage("删除失败,非法请求");
         }
         return returnMessage;
+    }
+
+
+    /**
+     * 请求来源判断
+     * @param request
+     * @return
+     */
+    private boolean ipCheck(HttpServletRequest request){
+        boolean flag = false;
+        PropertiesLoaderUtil pro = PropertiesLoaderUtil.getInstance();
+        boolean serFlag = Boolean.parseBoolean(pro.getOneProp("serviceYWFlag"));
+        if(serFlag){
+            //getRemoteAddr方法返回发出请求的客户机的IP地址。
+            //getLocalAddr方法返回WEB服务器的IP地址。
+            //String remoteAddr = request.getRemoteAddr();//得到来访者的IP地址
+            String localAddr = request.getLocalAddr();//获取WEB服务器的IP地址
+            logger.info("request获取的服务器IP地址："+localAddr);
+            String ip = pro.getOneProp("serviceYWIP");
+            logger.info("配置的服务器IP地址："+localAddr);
+            if(localAddr.equals(ip)){
+                flag = true;
+            }
+        }else{
+            flag = true;
+        }
+        return flag;
     }
 
 }

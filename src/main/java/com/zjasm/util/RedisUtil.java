@@ -65,9 +65,9 @@ public class RedisUtil {
             jedis.select(1);
             //String id = jedis.get("CAS_TICKET:TGT-1-0DKdZn03t5zOgIBKjxzM1y4uJxPx9Da1mJgXQJ5r35n65D9mvm3tKAfBKPQxk82U-JIDell-pc");
 
-            String str = jedis.get("CAS_TICKET:TGT-4-rPWve2UNK02SJ0XDF13ijzVB80uWfcO4gdQlLr1I2Jueq0dPGvsTmWgaGCJGzbngJDIDell-pc");
-            Object object= SerializeUtil.unserialize(str.getBytes());
-            System.out.println(object.toString());
+            String str = jedis.get("CAS_TICKET:TGT-1-YLqlZ-Jb4TN4V8VXu0bZUw47cSZfB5v-H4CI-6y0Vu3n6W3MrgHGjBaNvE388JrYKnIDell-pc");
+            //Object object= SerializeUtil.unserialize(str.getBytes());
+            System.out.println(str);
             jedis.close();
         } catch (Exception e) {
             e.printStackTrace();

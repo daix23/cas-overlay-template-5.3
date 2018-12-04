@@ -36,6 +36,8 @@ import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @EnableConfigurationProperties(CasConfigurationProperties.class)
@@ -327,27 +329,35 @@ public class RegController {
                 returnMessage.setCode(501);
                 returnMessage.setMessage("删除失败,serviceId不能为空");
             }else{
-                try {
-                    String ss="^(https|imaps|http)://"+serviceId+".*";
-                    //RegisteredService service = servicesManager.findServiceBy(a);
-                    //servicesManager.delete(service);//java.lang.IllegalArgumentException: ‘actionPerformed’ cannot be null.
-                    //自定义操作库删除
-                    JdbcTemplate template = Dbutil.getInstance();
-                    String sql = "delete from regexregisteredservice where serviceId='"+ss+"'";
-                    int ii= template.update(sql);
-                    //执行load生效
-                    servicesManager.load();
-                    if(ii>=1){
-                        returnMessage.setCode(200);
-                        returnMessage.setMessage("删除成功");
-                    }else{
-                        returnMessage.setCode(404);
-                        returnMessage.setMessage("删除失败,未找到此service");
+                boolean sqlFlag = com.zjasm.util.ParameterUtil.sqlInj(serviceId);
+                if(!sqlFlag){
+                    try {
+                        String ss="^(https|imaps|http)://"+serviceId+".*";
+                        //RegisteredService service = servicesManager.findServiceBy(a);
+                        //servicesManager.delete(service);//java.lang.IllegalArgumentException: ‘actionPerformed’ cannot be null.
+                        //自定义操作库删除
+                        JdbcTemplate template = Dbutil.getInstance();
+                        String sql = "delete from regexregisteredservice where serviceId='"+ss+"'";
+                        int ii= template.update(sql);
+                        //执行load生效
+                        servicesManager.load();
+                        if(ii>=1){
+                            returnMessage.setCode(200);
+                            returnMessage.setMessage("删除成功");
+                        }else{
+                            logger.error("删除service异常,未找到此service");
+                            returnMessage.setCode(404);
+                            returnMessage.setMessage("删除失败,未找到此service");
+                        }
+                    } catch (Exception e) {
+                        logger.error("删除service异常",e);
+                        returnMessage.setCode(500);
+                        returnMessage.setMessage("删除失败,删除service异常");
                     }
-                } catch (Exception e) {
-                    logger.error("删除service异常",e);
-                    returnMessage.setCode(500);
-                    returnMessage.setMessage("删除失败,删除service异常");
+                }else{
+                    logger.error("删除service异常,非法请求");
+                    returnMessage.setCode(502);
+                    returnMessage.setMessage("删除失败,非法请求");
                 }
             }
         }else{
@@ -371,12 +381,12 @@ public class RegController {
         if(serFlag){
             //getRemoteAddr方法返回发出请求的客户机的IP地址。
             //getLocalAddr方法返回WEB服务器的IP地址。
-            //String remoteAddr = request.getRemoteAddr();//得到来访者的IP地址
-            String localAddr = request.getLocalAddr();//获取WEB服务器的IP地址
-            logger.info("request获取的服务器IP地址："+localAddr);
+            String remoteAddr = request.getRemoteAddr();//得到来访者的IP地址
+            //String localAddr = request.getLocalAddr();//获取WEB服务器的IP地址
+            logger.info("request来访者IP地址："+remoteAddr);
             String ip = pro.getOneProp("serviceYWIP");
-            logger.info("配置的服务器IP地址："+localAddr);
-            if(localAddr.equals(ip)){
+            logger.info("配置的运维服务器IP地址："+ip);
+            if(remoteAddr.equals(ip)){
                 flag = true;
             }
         }else{

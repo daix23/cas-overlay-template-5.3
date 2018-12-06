@@ -77,6 +77,30 @@ public class RegController {
         return null;
     }
 
+    @GetMapping(value = "regPwdUrl")
+    public void regPwdUrl(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        //获取验证开关
+        PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
+        boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
+        HashMap<String, Object> jsonObj = new HashMap<String, Object>();
+        String regUrl = "#";
+        String pwdUrl = "#";
+        if(authIdmFlag){//易和
+            regUrl = propertiesLoaderUtil.getOneProp("registeruserUrlIdm");
+            pwdUrl = propertiesLoaderUtil.getOneProp("forgotpwdUrlIdm");
+        }else{
+            regUrl = propertiesLoaderUtil.getOneProp("registeruserUrl");
+            pwdUrl = propertiesLoaderUtil.getOneProp("forgotpwdUrl");
+        }
+        jsonObj.put("regUrl", regUrl);
+        jsonObj.put("pwdUrl", pwdUrl);
+        JSONObject json =  new JSONObject(jsonObj);
+        out.write(json.toString());
+        out.flush();
+        out.close();
+    }
 
     /**
      * 票据认证登录接口

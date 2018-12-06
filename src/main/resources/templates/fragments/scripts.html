@@ -38,6 +38,18 @@ function changeCaptcha(){
     //$("#captchaCode").attr('src',"/cas/captcha?rmd="+rmd);
 }
 
+function regPwdUrl(){
+    $.ajax({
+        type: "GET",
+        url: /*[[@{/regPwdUrl}]]*/,
+        dataType: "json",
+        success: function(data){
+            $("#registeruser").attr('href',data.regUrl);
+            $("#forgotpwd").attr('href',data.pwdUrl);
+        }
+    });
+}
+
 var setting ={
     check: {
         enable: true,

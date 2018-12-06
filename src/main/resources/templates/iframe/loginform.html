@@ -173,8 +173,9 @@
 
                     <div th:unless="${passwordManagementEnabled}">
                         <span class="fa fa-question-circle"></span>
-                        <span th:utext="#{screen.pm.button.registeruser}"></span>
-                        <span th:utext="#{screen.pm.button.forgotpwd}"></span>
+                        <span><a href="#" id="registeruser" target="_blank">注册账户</a></span>
+                        &nbsp;|&nbsp;
+                        <span><a href="#" id="forgotpwd" target="_blank">忘记密码</a></span>
                         <p/>
                     </div>
 
@@ -191,6 +192,7 @@
                                 console.log(i);
                                 return true;
                             });
+                            regPwdUrl();
                         });
                     </script>
                 </div>

@@ -37,6 +37,7 @@ import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
 
         List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
         QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
-        QueryJdbcAuthenticationProperties jdbcPros1 = jdbcProsList.get(1);
+        //QueryJdbcAuthenticationProperties jdbcPros1 = jdbcProsList.get(1);
         //自定义操作库
         JdbcTemplate template = Dbutil.getInstance();
         //获取服务的子系统链接service
@@ -110,7 +111,12 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         //查询数据库加密的的密码
         Map<String,Object> user = null;
         try {
-            user = template.queryForMap(jdbcPros.getSql(), username);
+            String userOrgSql = "SELECT u.userid,u.disabled,u.localpwd,u.userarea,u.loginname,org.orgcoding,org.orgname FROM userinfo u, user_org_ref ref,s_orginfo org " +
+                    "where  u.userid=ref.userId and  ref.orgid=org.id " +
+                    "and (u.loginname='"+username+"' OR u.phone='"+username+"')  AND u.deleteflag=0 and org.orgcoding like '"+orgcode+"%'  order by org.orgcoding asc LIMIT 1";
+
+            //user = template.queryForMap(jdbcPros.getSql(), username);
+            user = template.queryForMap(userOrgSql);
         }catch (Exception e){
             mycredential1.setPassword("!@#$%^!@#$%");
             throw new NoUserException("用户不存在！");
@@ -172,7 +178,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                 String idmToken = idValiResult.getToken();
                 HttpSession session = attributes.getRequest().getSession();
                 session.setAttribute("idmToken", idmToken);
-                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
+                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
             }else {
                 String errmsg = idValiResult.getErrmsg();
                 logger.info("易和用户登录失败："+errmsg);
@@ -188,7 +194,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             //if(encoder.matches(pwd,user.get("localpwd").toString())){
             if(pwd.equals(user.get(jdbcPros.getFieldPassword()).toString())){
-                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
+                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
             }else{
                 mycredential1.setPassword("!@#$%^!@#$%");
                 throw new InvalidPasswordException("密码错误！");
@@ -208,7 +214,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
      */
     public AuthenticationHandlerExecutionResult authOkResult(ServletRequestAttributes attributes,
                                                              String username,Map<String,Object> user,
-                                                             UsernamePasswordCaptchaCredential mycredential1,String orgcode){
+                                                             UsernamePasswordCaptchaCredential mycredential1,String orgcode ){
         HttpSession session = attributes.getRequest().getSession();
         session.setAttribute("username", username);
         //返回多属性
@@ -223,7 +229,35 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         //多返回一个orgcode参数
         map.put("orgcode", orgcode);
         return createHandlerResult(mycredential1, principalFactory.createPrincipal(username, map), null);*/
-        return createHandlerResult(mycredential1, principalFactory.createPrincipal(username), null);
+        //存放数据到里面
+        Map<String,Object> result = new HashMap<String,Object>();
+        result.put("userid", user.get("userid"));
+        result.put("loginname", username);
+        result.put("userarea", user.get("userarea"));
+        result.put("orgcode", user.get("orgcoding"));//读取返回的组织信息
+        result.put("orgname", user.get("orgname"));//读取返回的组织信息
+        //返回用户关联角色信息
+        //自定义操作库
+        JdbcTemplate template = Dbutil.getInstance();
+        String userRoleSysSql = "select * from v_user_role_authsys where username='"+username+"'";
+        List list  = template.queryForList(userRoleSysSql);
+        if(list!=null&&!list.isEmpty()){
+            List roles = new ArrayList();
+            List syss = new ArrayList();
+            for(int i=0;i<list.size();i++){
+                LinkedCaseInsensitiveMap  obj = (LinkedCaseInsensitiveMap ) list.get(i);
+                if("role".equals(obj.get("ATTR_KEY"))){
+                    roles.add(obj.get("ATTR_VAL"));
+                }else if("authsys".equals(obj.get("ATTR_KEY"))){
+                    syss.add(obj.get("ATTR_VAL"));
+                }
+            }
+            result.put("role_multi", roles);
+            result.put("authsys_multi", syss);
+        }
+        //允许登录，并且通过this.principalFactory.createPrincipal来返回用户属性
+        return createHandlerResult(mycredential1, this.principalFactory.createPrincipal(username, result));
+        //return createHandlerResult(mycredential1, principalFactory.createPrincipal(username), null);
     }
 
 

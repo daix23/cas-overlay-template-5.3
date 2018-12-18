@@ -73,7 +73,6 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         response.setHeader("Pragma", "no-cache"); // 支持HTTP 1.0. response.setHeader("Expires", "0");*/
 
         if(!captcha.equalsIgnoreCase(right)){
-            mycredential1.setPassword("!@#$%^!@#$%");//验证码错误，暂时无法登录处理，不然会凭借正确的用户名密码直接登录
             throw new InvalidCaptchaException("验证码错误！");
         }
 
@@ -94,12 +93,10 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         break;
                     }
                     if(i==listSiteDomain.size()-1){
-                        mycredential1.setPassword("!@#$%^!@#$%");
                         throw new NoAuthException("无权限访问！");
                     }
                 }
             }else {
-                mycredential1.setPassword("!@#$%^!@#$%");
                 throw new NoAuthException("无权限访问！");
             }
         }*/
@@ -118,7 +115,6 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             //user = template.queryForMap(jdbcPros.getSql(), username);
             user = template.queryForMap(userOrgSql);
         }catch (Exception e){
-            mycredential1.setPassword("!@#$%^!@#$%");
             throw new NoUserException("用户不存在！");
         }
         //获取验证开关
@@ -140,14 +136,12 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         params.getDatatype());
                 if("".equals(resultStr)){
                     String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
-                    mycredential1.setPassword("!@#$%^!@#$%");
                     throw new NoAuthException(msg);
                 }else{
                     JSONObject verifyResult = JSON.parseObject(resultStr);
                     if (verifyResult.getString("result").equals("0")) {
                         //易和验证成功
                     }else{
-                        mycredential1.setPassword("!@#$%^!@#$%");
                         throw new NoAuthException("msg");
                     }
                 }*/
@@ -182,21 +176,17 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             }else {
                 String errmsg = idValiResult.getErrmsg();
                 logger.info("易和用户登录失败："+errmsg);
-                mycredential1.setPassword("!@#$%^!@#$%");
                 throw new NoAuthException(errmsg);
             }
         }else{//本地验证
             //给数据进行md5加密
             logger.info("本地用户验证");
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(pwdStr.toString().getBytes());
-            String pwd = new BigInteger(1, md.digest()).toString(16);
+            String pwd = new CustomPasswordEncoder().encode(pwdStr);
             //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             //if(encoder.matches(pwd,user.get("localpwd").toString())){
-            if(pwd.equals(user.get(jdbcPros.getFieldPassword()).toString())){
+            if(pwd.equals(user.get("localpwd").toString())){
                 handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
             }else{
-                mycredential1.setPassword("!@#$%^!@#$%");
                 throw new InvalidPasswordException("密码错误！");
             }
         }

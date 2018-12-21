@@ -1,8 +1,8 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^http://126.33.10.60:8081/client.*",
+  "serviceId" : "^http://localhost:8081/client.*",
   "name" : "client",
-  "theme" : "iframe",
+  "theme" : "apereo",
   "id" : 10000006,
   "description" : "casClient service",
   "evaluationOrder" : 1,
@@ -13,10 +13,10 @@
     "@class" : "org.apereo.cas.services.DefaultRegisteredServiceAccessStrategy",
     "enabled" : true,
     "ssoEnabled" : true,
-    "unauthorizedRedirectUrl" : "http://126.33.10.60:8080/cas",
+    "unauthorizedRedirectUrl" : "http://localhost:8080/cas/noauth",
     "requiredAttributes" : {
       "@class" : "java.util.HashMap",
-      "authsys_multi" : [ "java.util.HashSet", [ "http://126.33.10.60:8081/client"] ]
+      "authsys_multi" : [ "java.util.HashSet", [ "http://localhost:8081/client"] ]
     }
   }
 }

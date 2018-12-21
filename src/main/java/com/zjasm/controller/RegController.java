@@ -10,6 +10,7 @@ import com.commnetsoft.util.ParameterUtil;
 import com.commnetsoft.util.ServiceUtil;
 import com.commnetsoft.util.StrHelper;
 import com.zjasm.captcha.CaptchaUtil;
+import com.zjasm.exception.NoAuthException;
 import com.zjasm.model.ReturnMessage;
 import com.zjasm.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -59,6 +60,11 @@ public class RegController {
         return "Hello World!";
     }*/
 
+
+    @GetMapping("noauth")
+    public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new NoAuthException("无权限访问！");
+    }
 
     @GetMapping(value = "captcha")
     public String capcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -300,7 +306,7 @@ public class RegController {
                         AppliProUtil appliProUtil = AppliProUtil.getInstance();
                         String sname = appliProUtil.getOneProp("cas.server.name");
                         String sprefix = appliProUtil.getOneProp("cas.server.prefix");
-                        String reUrl = sprefix.replace("${cas.server.name}",sname);
+                        String reUrl = sprefix.replace("${cas.server.name}",sname)+"/noauth";
                         drsas.setUnauthorizedRedirectUrl(new URI(reUrl));
                         Map<String, Set<String>> map = new HashMap<String, Set<String>>();
                         Set<String> setStr = new HashSet<String>();

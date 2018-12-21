@@ -24,14 +24,14 @@
 <main role="main" class="container mt-3 mb-3">
 <div layout:fragment="content">
     <div class="alert alert-danger">
-        <h2 th:utext="#{screen.unavailable.heading(${status},${error})}">CAS is unable to process this request: "{0}:{1}"</h2>
+        <!--<h2 th:utext="#{screen.unavailable.heading(${status},${error})}">CAS is unable to process this request: "{0}:{1}"</h2>-->
         <div th:utext="#{screen.unavailable.message}">screen.unavailable.message would go here</div>
-        <pre id="errorMsg" class="mt-4" style="white-space: pre-wrap;" th:text="${'Error: ' + message}">error message would go here</pre>
-        <p id="errorDetails">
+        <h3 id="errorMsg" class="mt-4" style="white-space: pre-wrap;" th:text="${'错误提示: ' + message}">error message would go here</h3>
+        <!--<p id="errorDetails">
             <button type="button" class="btn btn-shutdown"
                     onclick="showErrorDetails();">View Details
             </button>
-        </p>
+        </p>-->
     </div>
 </div>
 </main>

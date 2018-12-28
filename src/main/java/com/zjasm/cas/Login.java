@@ -109,7 +109,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         Map<String,Object> user = null;
         try {
             String userOrgSql = "SELECT u.userid,u.disabled,u.localpwd,u.userarea,u.loginname,org.orgcoding,org.orgname FROM userinfo u, user_org_ref ref,s_orginfo org " +
-                    "where  u.userid=ref.userId and  ref.orgid=org.id and (u.loginname='"+username+"' OR u.phone='"+username+"') and org.orgcoding like '"+orgcode+"%' " +
+                    "where  u.userid=ref.userId and  ref.orgid=org.id and (u.loginname='"+username+"' OR u.phone='"+username+"') and org.orgcoding='"+orgcode+"' " +
                     "AND u.deleteflag=0 and ref.isdel=0 and org.isdel=0  order by org.orgcoding asc LIMIT 1";
 
             //user = template.queryForMap(jdbcPros.getSql(), username);

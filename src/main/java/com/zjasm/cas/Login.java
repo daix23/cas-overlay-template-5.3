@@ -5,10 +5,7 @@ import com.commnetsoft.IDMConfig;
 import com.commnetsoft.Prop;
 import com.commnetsoft.model.IdValidationResult;
 import com.zjasm.captcha.UsernamePasswordCaptchaCredential;
-import com.zjasm.exception.InvalidCaptchaException;
-import com.zjasm.exception.InvalidPasswordException;
-import com.zjasm.exception.NoAuthException;
-import com.zjasm.exception.NoUserException;
+import com.zjasm.exception.*;
 import com.zjasm.util.Dbutil;
 import com.zjasm.util.IdmConfigUtil;
 import com.zjasm.util.PropertiesLoaderUtil;
@@ -61,6 +58,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         String captcha = mycredential1.getCaptcha();
         String orgcode = mycredential1.getOrgcode();
         String devcoding = mycredential1.getDevcoding();//组织域名
+        String logintype = mycredential1.getLogintype();//登录类型
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         String right = attributes.getRequest().getSession().getAttribute("captcha").toString();
         //跨域问题
@@ -76,13 +74,13 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             throw new InvalidCaptchaException("验证码错误！");
         }
 
-        List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
-        QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
+        //List<QueryJdbcAuthenticationProperties> jdbcProsList = casProperties.getAuthn().getJdbc().getQuery();
+        //QueryJdbcAuthenticationProperties jdbcPros = jdbcProsList.get(0);
         //QueryJdbcAuthenticationProperties jdbcPros1 = jdbcProsList.get(1);
         //自定义操作库
         JdbcTemplate template = Dbutil.getInstance();
         //获取服务的子系统链接service
-        String serviceStr = attributes.getRequest().getParameter("service");
+        //String serviceStr = attributes.getRequest().getParameter("service");
         //判断用户是否属于该系统
         /*if(serviceStr!=""&&serviceStr!=null){
             final List listSiteDomain = template.queryForList(jdbcPros1.getSql(),mycredential1.getUsername());
@@ -105,89 +103,96 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         String username=mycredential1.getUsername();
         String pwdStr = mycredential1.getPassword();
 
-        //查询数据库加密的的密码
-        Map<String,Object> user = null;
-        try {
-            String userOrgSql = "SELECT u.userid,u.disabled,u.localpwd,u.userarea,u.loginname,org.orgcoding,org.orgname FROM userinfo u, user_org_ref ref,s_orginfo org " +
-                    "where  u.userid=ref.userId and  ref.orgid=org.id and (u.loginname='"+username+"' OR u.phone='"+username+"') and org.orgcoding='"+orgcode+"' " +
-                    "AND u.deleteflag=0 and ref.isdel=0 and org.isdel=0  order by org.orgcoding asc LIMIT 1";
-
-            //user = template.queryForMap(jdbcPros.getSql(), username);
-            user = template.queryForMap(userOrgSql);
-        }catch (Exception e){
-            throw new NoUserException("用户不存在！");
-        }
-        //获取验证开关
-        PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
-        boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
-        logger.info("易和接入开关authIdmFlag："+authIdmFlag);
-        if(authIdmFlag){
-            logger.info("易和用户验证");
-            //1、对接易和用户名密码验证并返回令牌
-            /*String resultStr = "";
-            try {
-                PortTypeParams params = new PortTypeParams();
-                SimpleAuthService service = new SimpleAuthService();
-                SimpleAuthServicePortType portType = service
-                        .getSimpleAuthServiceHttpPort();
-                resultStr = portType.idValidation(params.getServiceCode(),
-                        params.getCurTimeStr(), params.getSign(), username,
-                        orgcode, params.getEncryptiontype(), pwdStr,
-                        params.getDatatype());
-                if("".equals(resultStr)){
-                    String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
-                    throw new NoAuthException(msg);
-                }else{
-                    JSONObject verifyResult = JSON.parseObject(resultStr);
-                    if (verifyResult.getString("result").equals("0")) {
-                        //易和验证成功
-                    }else{
-                        throw new NoAuthException("msg");
-                    }
-                }*/
-            //不需要解码
-            //String pswBs64= CommonUtil.getFromBASE64(pwdStr);
-
-            //--3个参数，1、sql 2、要传递的参数数组 3、返回来的对象class
-            //获取组合name
-            /*String sqlStr = "SELECT CONCAT(LOGINNAME,'.',devcoding) AS LOGINNAME FROM userinfo WHERE Userorg like '"+orgcode+"%' AND " +
-                    "LOGINNAME='"+username+"' AND deleteflag=0 AND usertype=1";
-            String nameConcat = (String) template.queryForObject(sqlStr,java.lang.String.class);*/
-            //String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
-            //String nameConcat = username+".hz";
-            String nameConcat = username+"."+devcoding;
-            logger.info("易和接入nameConcat："+nameConcat);
-            IdmConfigUtil.getInstance();
-            Prop prop = IDMConfig.getProp(IdmConfigUtil.IDM_KEY_GOV);
-            logger.info("易和接入prop："+prop.getUrl());
-            IDMClient client = new IDMClient(prop);
-            IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pwdStr);
-            logger.info("易和接入idValiResult："+idValiResult.getResult());
-            if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
-                logger.info("易和用户登录成功");
-                //重置本地密码，本地单点登录
-                //String localpwd = (String)user.get("localpwd");
-                //String lp = MD5Util2.convertMD5(localpwd);
-                mycredential1.setPassword("123456");
-                String idmToken = idValiResult.getToken();
-                HttpSession session = attributes.getRequest().getSession();
-                session.setAttribute("idmToken", idmToken);
-                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
-            }else {
-                String errmsg = idValiResult.getErrmsg();
-                logger.info("易和用户登录失败："+errmsg);
-                throw new NoAuthException(errmsg);
+        if("grlogin".equals(logintype)){//个人登录
+            throw new NoOpenException("此功能暂未开放！");
+        }else{//法人登录
+            if(orgcode==null||"".equals(orgcode)){
+                throw new InvalidOrgException("组织不能为空！");
             }
-        }else{//本地验证
-            //给数据进行md5加密
-            logger.info("本地用户验证");
-            String pwd = new CustomPasswordEncoder().encode(pwdStr);
-            //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            //if(encoder.matches(pwd,user.get("localpwd").toString())){
-            if(pwd.equals(user.get("localpwd").toString())){
-                handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
-            }else{
-                throw new InvalidPasswordException("密码错误！");
+            //查询数据库加密的的密码
+            Map<String,Object> user = null;
+            try {
+                String userOrgSql = "SELECT u.userid,u.disabled,u.localpwd,u.userarea,u.loginname,org.orgcoding,org.orgname FROM userinfo u, user_org_ref ref,s_orginfo org " +
+                        "where  u.userid=ref.userId and  ref.orgid=org.id and (u.loginname='"+username+"' OR u.phone='"+username+"') and org.orgcoding='"+orgcode+"' " +
+                        "AND u.deleteflag=0 and ref.isdel=0 and org.isdel=0  order by org.orgcoding asc LIMIT 1";
+
+                //user = template.queryForMap(jdbcPros.getSql(), username);
+                user = template.queryForMap(userOrgSql);
+            }catch (Exception e){
+                throw new NoUserException("用户不存在！");
+            }
+            //获取验证开关
+            PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
+            boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
+            logger.info("易和接入开关authIdmFlag："+authIdmFlag);
+            if(authIdmFlag){
+                logger.info("易和用户验证");
+                //1、对接易和用户名密码验证并返回令牌
+                /*String resultStr = "";
+                try {
+                    PortTypeParams params = new PortTypeParams();
+                    SimpleAuthService service = new SimpleAuthService();
+                    SimpleAuthServicePortType portType = service
+                            .getSimpleAuthServiceHttpPort();
+                    resultStr = portType.idValidation(params.getServiceCode(),
+                            params.getCurTimeStr(), params.getSign(), username,
+                            orgcode, params.getEncryptiontype(), pwdStr,
+                            params.getDatatype());
+                    if("".equals(resultStr)){
+                        String msg = "单点登录失败易和验证失败：易和验证失败，请联系管理员！";
+                        throw new NoAuthException(msg);
+                    }else{
+                        JSONObject verifyResult = JSON.parseObject(resultStr);
+                        if (verifyResult.getString("result").equals("0")) {
+                            //易和验证成功
+                        }else{
+                            throw new NoAuthException("msg");
+                        }
+                    }*/
+                //不需要解码
+                //String pswBs64= CommonUtil.getFromBASE64(pwdStr);
+
+                //--3个参数，1、sql 2、要传递的参数数组 3、返回来的对象class
+                //获取组合name
+                /*String sqlStr = "SELECT CONCAT(LOGINNAME,'.',devcoding) AS LOGINNAME FROM userinfo WHERE Userorg like '"+orgcode+"%' AND " +
+                        "LOGINNAME='"+username+"' AND deleteflag=0 AND usertype=1";
+                String nameConcat = (String) template.queryForObject(sqlStr,java.lang.String.class);*/
+                //String nameConcat = (String) template.queryForObject(jdbcPros2.getSql(),new Object[] {orgcode,username},java.lang.String.class);
+                //String nameConcat = username+".hz";
+                String nameConcat = username+"."+devcoding;
+                logger.info("易和接入nameConcat："+nameConcat);
+                IdmConfigUtil.getInstance();
+                Prop prop = IDMConfig.getProp(IdmConfigUtil.IDM_KEY_GOV);
+                logger.info("易和接入prop："+prop.getUrl());
+                IDMClient client = new IDMClient(prop);
+                IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pwdStr);
+                logger.info("易和接入idValiResult："+idValiResult.getResult());
+                if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
+                    logger.info("易和用户登录成功");
+                    //重置本地密码，本地单点登录
+                    //String localpwd = (String)user.get("localpwd");
+                    //String lp = MD5Util2.convertMD5(localpwd);
+                    mycredential1.setPassword("123456");
+                    String idmToken = idValiResult.getToken();
+                    HttpSession session = attributes.getRequest().getSession();
+                    session.setAttribute("idmToken", idmToken);
+                    handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
+                }else {
+                    String errmsg = idValiResult.getErrmsg();
+                    logger.info("易和用户登录失败："+errmsg);
+                    throw new NoAuthException(errmsg);
+                }
+            }else{//本地验证
+                //给数据进行md5加密
+                logger.info("本地用户验证");
+                String pwd = new CustomPasswordEncoder().encode(pwdStr);
+                //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                //if(encoder.matches(pwd,user.get("localpwd").toString())){
+                if(pwd.equals(user.get("localpwd").toString())){
+                    handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
+                }else{
+                    throw new InvalidPasswordException("密码错误！");
+                }
             }
         }
         return handlerResult;

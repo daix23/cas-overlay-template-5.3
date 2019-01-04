@@ -41,5 +41,13 @@ public class UsernamePasswordCaptchaCredential extends RememberMeUsernamePasswor
         this.devcoding = devcoding;
     }
 
+    private String logintype;
 
+    public String getLogintype() {
+        return logintype;
+    }
+
+    public void setLogintype(String logintype) {
+        this.logintype = logintype;
+    }
 }

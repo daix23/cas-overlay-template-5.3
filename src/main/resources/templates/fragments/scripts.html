@@ -50,6 +50,43 @@ function regPwdUrl(){
     });
 }
 
+function displayMesg() {
+    $(".alert-danger").css('display','none');
+}
+/**
+ *个人注册
+ */
+function grLogin() {
+    $("#logintype").val("grlogin");
+    var oLigr = $("#grlogin");
+    var oLifr = $("#frlogin");
+    var inputorg = $("#orgcode");
+    var organimg = $("#organimg");
+    inputorg.css('display','none');
+    organimg.css('display','none');
+    oLifr.css({"background":"rgba(0, 0, 0, 0.03)","color":"#787878"});
+    oLigr.css({"background":"white","color":"black"});
+    $('#registeruser').attr('href','https://puser.zjzwfw.gov.cn/sso/usp.do?action=register&servicecode=zjdlxxggfw');
+    $('#forgotpwd').attr('href','https://puser.zjzwfw.gov.cn/sso/usp.do?action=forgotPwd&servicecode=zjdlxxggfw');
+}
+
+/**
+ * 法人注册
+ */
+function frLogin() {
+    $("#logintype").val("frlogin");
+    var oLigr = $("#grlogin");
+    var oLifr = $("#frlogin");
+    var inputorg = $("#orgcode");
+    var organimg = $("#organimg");
+    inputorg.css('display','block');
+    organimg.css('display','block');
+    oLigr.css({"background":"rgba(0, 0, 0, 0.03)","color":"#787878"});
+    oLifr.css({"background":"white","color":"black"});
+    $('#registeruser').attr('href','https://uuser.zjzwfw.gov.cn/jsp/client/uuuser/uuuserRegistStep1.jsp');
+    $('#forgotpwd').attr('href','https://uuser.zjzwfw.gov.cn/jsp/client/login/forgetPassword.jsp');
+}
+
 function showregedit(){
     $("#regeditmenu").css('display','block');
 }
@@ -57,10 +94,10 @@ function hideregedit(){
     $("#regeditmenu").css('display','none');
 }
 function showgrregedit() {
-    window.open("https://puser.zjzwfw.gov.cn/sso/usp.do?action=register&servicecode=njdh", "_blank");
+    window.open("https://puser.zjzwfw.gov.cn/sso/usp.do?action=register&servicecode=zjdlxxggfw", "_blank");
 }
 function showfrregedit() {
-    window.open("https://uuser.zjzwfw.gov.cn/jsp/client/uuuser/uuuserRegistStep1.jsp?", "_blank");
+    window.open("https://uuser.zjzwfw.gov.cn/jsp/client/uuuser/uuuserRegistStep1.jsp", "_blank");
 }
 var setting ={
     check: {

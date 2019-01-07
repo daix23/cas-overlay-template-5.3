@@ -6,6 +6,10 @@ import com.commnetsoft.IDMConfig;
 import com.commnetsoft.Prop;
 import com.commnetsoft.model.GetUserInfoResult;
 import com.commnetsoft.model.TicketValidationResult;
+import com.commnetsoft.proxy.SsoClient;
+import com.commnetsoft.proxy.model.CallResult;
+import com.commnetsoft.proxy.model.UserInfo;
+import com.commnetsoft.proxy.util.ConfigHelper;
 import com.commnetsoft.util.ParameterUtil;
 import com.commnetsoft.util.ServiceUtil;
 import com.commnetsoft.util.StrHelper;
@@ -60,6 +64,34 @@ public class RegController {
         return "Hello World!";
     }*/
 
+    @GetMapping("grTicket")
+    public void grTicket(HttpServletRequest request, HttpServletResponse response){
+        String ticket = request.getParameter("ticket");//获取票据
+        String sp = request.getParameter("sp");//具体事项页面地址 如http://aa.com/item?id=3232
+        SsoClient client = SsoClient.getInstance();//单点登录工具
+//       	client.initConfig("test", "zjgwypwd", "http://puser.zjzwfw.gov.cn/sso/");
+        //登录认证
+        CallResult cr = client.login(request, ticket);
+        logger.info("单点登录，错误码："+cr.getResult()+"，错误信息："+cr.getErrmsg()+"。 ");
+        if("0".equals(cr.getResult())){//认证成功登录系统
+            UserInfo user = client.getUser(request);
+            logger.info("获取用户信息，错误码："+user.getResult()+"，错误信息："+user.getErrmsg()+"。用户信息 "+user.getUsername());
+            if("0".equals(user.getResult())){
+                //TODO 获取用户信息成功， 相关业务
+                logger.info("获取用户信息成功！");
+                //TODO
+                if(sp == null){//跳转到首页
+
+                }else{//跳转到具体事项页面
+
+                }
+            }
+        }else{//认证失败
+            logger.info("单点登录失败，错误码："+cr.getResult()+"，错误信息："+cr.getErrmsg()+"。 ");
+            String url = ConfigHelper.getProperty("url");
+            String servicecode = ConfigHelper.getProperty("servicecode");
+        }
+    }
 
     @GetMapping("noauth")
     public void test(HttpServletRequest request, HttpServletResponse response) throws Exception {

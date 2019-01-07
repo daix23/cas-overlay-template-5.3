@@ -4,6 +4,9 @@ import com.commnetsoft.IDMClient;
 import com.commnetsoft.IDMConfig;
 import com.commnetsoft.Prop;
 import com.commnetsoft.model.IdValidationResult;
+import com.commnetsoft.proxy.SsoClient;
+import com.commnetsoft.proxy.model.CallResult;
+import com.commnetsoft.proxy.model.UserInfo;
 import com.zjasm.captcha.UsernamePasswordCaptchaCredential;
 import com.zjasm.exception.*;
 import com.zjasm.util.Dbutil;
@@ -29,6 +32,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.FailedLoginException;
+import javax.security.auth.login.LoginException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
@@ -104,7 +109,22 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         String pwdStr = mycredential1.getPassword();
 
         if("grlogin".equals(logintype)){//个人登录
-            throw new NoOpenException("此功能暂未开放！");
+            HttpServletRequest request = attributes.getRequest();
+            SsoClient client = SsoClient.getInstance();//单点登录工具
+            CallResult callResult= client.login(request,username,null,pwdStr);
+            logger.info("个人单点登录，错误码："+callResult.getResult()+"，错误信息："+callResult.getErrmsg()+"。 ");
+            if("0".equals(callResult.getResult())){//认证成功登录系统
+                UserInfo user = client.getUser(request);
+                logger.info("获取用户信息，错误码："+user.getResult()+"，错误信息："+user.getErrmsg()+"。用户信息 "+user.getUsername());
+                if("0".equals(user.getResult())){
+                    //TODO 获取用户信息成功， 相关业务
+                    handlerResult = authOkResultPerson(attributes,username,user,mycredential1);
+                }
+            }else{//认证失败
+                logger.info("个人单点登录失败，错误码："+callResult.getResult()+"，错误信息："+callResult.getErrmsg()+"。 ");
+                throw new LoginException();
+            }
+            //throw new NoOpenException("此功能暂未开放！");
         }else{//法人登录
             if(orgcode==null||"".equals(orgcode)){
                 throw new InvalidOrgException("组织不能为空！");
@@ -197,6 +217,41 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         }
         return handlerResult;
     }
+
+    /**
+     * 个人用户多属性返回
+     * @param attributes
+     * @param username
+     * @param user
+     * @param mycredential1
+     * @return
+     */
+    public AuthenticationHandlerExecutionResult authOkResultPerson(ServletRequestAttributes attributes,
+                                                             String username,UserInfo user,
+                                                             UsernamePasswordCaptchaCredential mycredential1){
+        HttpSession session = attributes.getRequest().getSession();
+        session.setAttribute("username", username);
+        //存放数据到里面
+        Map<String,Object> result = new HashMap<String,Object>();
+        result.put("userid", user.getUserid());
+        result.put("loginname", user.getLoginname());
+        result.put("mobile", user.getMobile());
+        result.put("username", user.getUsername());
+        result.put("idnum", user.getIdnum());
+        PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
+        String authsysPerson = propertiesLoaderUtil.getOneProp("authsysPerson");
+        String[] strArr = authsysPerson.split(",");
+        if(strArr!=null&&strArr.length!=0){
+            List syss = new ArrayList();
+            for(int i=0;i<strArr.length;i++){
+                String one = strArr[i];
+                syss.add(one);
+            }
+            result.put("authsys_multi", syss);
+        }
+        return createHandlerResult(mycredential1, this.principalFactory.createPrincipal(username, result));
+    }
+
 
     /**
      * 多属性返回

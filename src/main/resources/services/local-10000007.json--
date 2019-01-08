@@ -1,8 +1,8 @@
 {
   "@class" : "org.apereo.cas.services.RegexRegisteredService",
-  "serviceId" : "^(https|imaps|http)://localhost.*",
+  "serviceId" : "^(https|imaps|http)://localhost:8081/client.*",
   "name" : "local",
-  "theme" : "iframe",
+  "theme" : "apereo",
   "id" : 10000007,
   "description" : "This service definition authorizes all application urls that support HTTPS and IMAPS protocols.",
   "evaluationOrder" : 10001,

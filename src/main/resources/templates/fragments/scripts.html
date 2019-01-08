@@ -10,6 +10,7 @@
 <script type="text/javascript" th:src="@{${#themes.code('cas.javascript.file')}}"></script>
 <script type="text/javascript" th:src="@{${#themes.code('cas.javascript.zTreeCorefile')}}"></script>
 <script type="text/javascript" th:src="@{${#themes.code('cas.javascript.zTreeExcheckfile')}}"></script>
+<script type="text/javascript" th:src="@{${#themes.code('cas.javascript.security')}}"></script>
 <!--<script type="text/javascript" src="js/cas.js"></script>-->
 
 <script th:inline="javascript">
@@ -49,6 +50,19 @@ function regPwdUrl(){
         }
     });
 }
+//获取公钥的 modulus 和 exponent
+function modulusExponent(){
+    $.ajax({
+        type: "GET",
+        url: /*[[@{/modulusExponent}]]*/,
+        dataType: "json",
+        success: function(data){
+            $("#hid_modulus").val(data.modulus);
+            $("#hid_exponent").val(data.exponent);
+        }
+    });
+}
+
 
 function displayMesg() {
     $(".alert-danger").css('display','none');

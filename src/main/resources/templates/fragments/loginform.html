@@ -100,6 +100,8 @@
                                        th:accesskey="#{screen.welcome.label.password.accesskey}"
                                        th:field="*{password}"
                                        autocomplete="off"/>
+                                <input id="hid_modulus" type="hidden" value="">
+                                <input id="hid_exponent" type="hidden" value="">
                                 <span id="capslock-on" style="display:none;">
                                 <p>
                                     <i class="fa fa-exclamation-circle"></i>
@@ -197,9 +199,18 @@
                             $("header").css('display','block');
                             initZTree();
                             $("#fm1").submit(function () {
+                                // 页面里，Javascript对明文进行加密：
+                                var modulus = $('#hid_modulus').val(),
+                                    exponent = $('#hid_exponent').val();
+                                var $password = $('#password');
+                                var key = RSAUtils.getKeyPair(exponent, '', modulus);
+                                var password = $password.val();
+                                password = RSAUtils.encryptedString(key, password);
+                                $password.val(password);
+
                                 $(":submit").attr("disabled", true);
-                                $(":submit").attr("value", i);
-                                console.log(i);
+                                $(":submit").attr("value", "请稍等……");
+                                //console.log(i);
                                 return true;
                             });
                             var logintype = $("#logintype").val();
@@ -208,6 +219,7 @@
                             }else{
                                 frLogin();
                             }
+                            modulusExponent();
                             //regPwdUrl();
                         });
                     </script>

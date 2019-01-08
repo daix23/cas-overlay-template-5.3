@@ -17,6 +17,7 @@ import com.zjasm.captcha.CaptchaUtil;
 import com.zjasm.exception.NoAuthException;
 import com.zjasm.model.ReturnMessage;
 import com.zjasm.util.*;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 import org.apereo.cas.configuration.CasConfigurationProperties;
 import org.apereo.cas.configuration.model.support.jdbc.QueryJdbcAuthenticationProperties;
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.net.URI;
+import java.security.interfaces.RSAPublicKey;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -456,5 +458,29 @@ public class RegController {
         }
         return flag;
     }
+
+    /**
+     * 登录页面获取公钥的 modulus 和 exponent 传给页面。
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    @GetMapping(value = "modulusExponent")
+    public void modulusExponent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        HashMap<String, Object> jsonObj = new HashMap<String, Object>();
+        // Hex -> apache commons-codec
+        RSAPublicKey publicKey = RSAUtils.getDefaultPublicKey();
+        String modulus = new String(Hex.encodeHex(publicKey.getModulus().toByteArray()));
+        String exponent =  new String(Hex.encodeHex(publicKey.getPublicExponent().toByteArray()));
+        jsonObj.put("modulus", modulus);
+        jsonObj.put("exponent", exponent);
+        JSONObject json =  new JSONObject(jsonObj);
+        out.write(json.toString());
+        out.flush();
+        out.close();
+    }
+
 
 }

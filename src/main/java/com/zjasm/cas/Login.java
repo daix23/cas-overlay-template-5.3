@@ -12,6 +12,7 @@ import com.zjasm.exception.*;
 import com.zjasm.util.Dbutil;
 import com.zjasm.util.IdmConfigUtil;
 import com.zjasm.util.PropertiesLoaderUtil;
+import com.zjasm.util.RSAUtils;
 import org.apereo.cas.authentication.Credential;
 import org.apereo.cas.authentication.AuthenticationHandlerExecutionResult;
 import org.apereo.cas.authentication.PreventedException;
@@ -60,6 +61,9 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
     protected AuthenticationHandlerExecutionResult doAuthentication(Credential credential) throws GeneralSecurityException, PreventedException {
         UsernamePasswordCaptchaCredential mycredential1 = (UsernamePasswordCaptchaCredential) credential;
         AuthenticationHandlerExecutionResult handlerResult = null;
+        String pwdRSA = mycredential1.getPassword();
+        // 服务器端，使用RSAUtils工具类对密文进行解密
+        String pwdStr = RSAUtils.decryptStringByJs(pwdRSA);
         String captcha = mycredential1.getCaptcha();
         String orgcode = mycredential1.getOrgcode();
         String devcoding = mycredential1.getDevcoding();//组织域名
@@ -104,9 +108,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             }
         }*/
 
-
         String username=mycredential1.getUsername();
-        String pwdStr = mycredential1.getPassword();
 
         if("grlogin".equals(logintype)){//个人登录
             HttpServletRequest request = attributes.getRequest();
@@ -233,7 +235,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         session.setAttribute("username", username);
         //存放数据到里面
         Map<String,Object> result = new HashMap<String,Object>();
-        result.put("userid", user.getUserid());
+        result.put("userid", user.getMobile());
         result.put("loginname", user.getLoginname());
         result.put("mobile", user.getMobile());
         result.put("username", user.getUsername());

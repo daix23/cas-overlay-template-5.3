@@ -80,8 +80,11 @@ function grLogin() {
     organimg.css('display','none');
     oLifr.css({"background":"rgba(0, 0, 0, 0.03)","color":"#787878"});
     oLigr.css({"background":"white","color":"black"});
-    $('#registeruser').attr('href','https://puser.zjzwfw.gov.cn/sso/usp.do?action=register&servicecode=zjdlxxggfw');
-    $('#forgotpwd').attr('href','https://puser.zjzwfw.gov.cn/sso/usp.do?action=forgotPwd&servicecode=zjdlxxggfw');
+    $("#regforget").html('<span class="fa fa-question-circle" style="color: #63B8FF;margin-right:5px;"></span>' +
+        '<span><a href="https://puser.zjzwfw.gov.cn/sso/usp.do?action=register&servicecode=zjdlxxggfw" id="registeruser" target="_blank">注册账户</a></span>' +
+        '&nbsp;|&nbsp;' +
+        '<span><a href="https://puser.zjzwfw.gov.cn/sso/usp.do?action=forgotPwd&servicecode=zjdlxxggfw" id="forgotpwd" target="_blank">忘记密码</a></span>' +
+        '<p/>');
 }
 
 /**
@@ -97,8 +100,11 @@ function frLogin() {
     organimg.css('display','block');
     oLigr.css({"background":"rgba(0, 0, 0, 0.03)","color":"#787878"});
     oLifr.css({"background":"white","color":"black"});
-    $('#registeruser').attr('href','https://uuser.zjzwfw.gov.cn/jsp/client/uuuser/uuuserRegistStep1.jsp');
-    $('#forgotpwd').attr('href','https://uuser.zjzwfw.gov.cn/jsp/client/login/forgetPassword.jsp');
+    //$('#registeruser').attr('href','https://uuser.zjzwfw.gov.cn/jsp/client/uuuser/uuuserRegistStep1.jsp');
+    $('#forgotpwd').attr('href','');
+    $("#regforget").html('<span class="fa fa-question-circle" style="color: #63B8FF;margin-right:5px;"></span>' +
+        '<span><a href="http://gmuser.zjzwfw.gov.cn/idm/guser/forgetpwd" id="forgotpwd" target="_blank">忘记密码</a></span>' +
+        '<p/>');
 }
 
 function showregedit(){

@@ -184,17 +184,16 @@
                         $( document ).ready(function() {
                             var url = window.location.href;
                             var urlLen = url.length;
-                            //alert(getParam("service"));
                             var ser = getParam("service");
-                            //alert(ser);
-                            var substr = url.substring(url.indexOf(ser)+ser.length,urlLen);
-                            //alert(substr);
-                            if(ser.indexOf("//") != -1 ){
-                                var arr = ser.split("//");
-                                if(arr[1].indexOf(":")==-1){
-                                    var url2 = changeUrl(ser);
-                                    var urlArr = url.split("service=");
-                                    window.location.href=urlArr[0]+"service="+url2+substr;
+                            if(ser!=null&&ser!=undefined){
+                                var substr = url.substring(url.indexOf(ser)+ser.length,urlLen);
+                                if(ser.indexOf("//") != -1 ){
+                                    var arr = ser.split("//");
+                                    if(arr[1].indexOf(":")==-1){
+                                        var url2 = changeUrl(ser);
+                                        var urlArr = url.split("service=");
+                                        window.location.href=urlArr[0]+"service="+url2+substr;
+                                    }
                                 }
                             }
                             //先显示头部

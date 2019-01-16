@@ -61,4 +61,49 @@ public class CommonUtil {
         }
     }
 
+    public static String replaceDomainAndPort(String domain,String port,String url){
+        String url_bak = "";
+        if(url.indexOf("//") != -1 ){
+            String[] splitTemp = url.split("//");
+            url_bak = splitTemp[0]+"//";
+
+            if(splitTemp.length >=1 && splitTemp[1].indexOf("/") != -1){
+                String[] urlTemp2 = splitTemp[1].split("/");
+                if(domain==null){
+                    domain = urlTemp2[0];
+                }
+            }
+
+
+            if(port != null){
+                url_bak = url_bak + domain+":"+port;
+            }else{
+                url_bak = url_bak + domain;
+            }
+
+            if(splitTemp.length >=1 && splitTemp[1].indexOf("/") != -1){
+                String[] urlTemp2 = splitTemp[1].split("/");
+                if(urlTemp2.length > 1){
+                    for(int i = 1;i < urlTemp2.length; i++){
+                        url_bak = url_bak +"/"+urlTemp2[i];
+                    }
+                }
+                System.out.println("url_bak:"+url_bak);
+            }else{
+                System.out.println("url_bak:"+url_bak);
+            }
+        }
+        return url_bak;
+    }
+
+    public static void main(final String[] args) throws Exception {
+        //String url = "http://localhost/cas?code=123"; //cache.config.get("casServer");
+        String url = "http://sdi.zjzwfw.gov.cn/resources-server/rescenter/index.html#/"; //cache.config.get("casServer");
+        String url1 = replaceDomainAndPort(null,"80",url);
+        System.out.println(url1);
+    }
+
+
+
+
 }

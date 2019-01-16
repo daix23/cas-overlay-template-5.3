@@ -1,5 +1,7 @@
 package com.zjasm.cas;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.commnetsoft.IDMClient;
 import com.commnetsoft.IDMConfig;
 import com.commnetsoft.Prop;
@@ -9,10 +11,8 @@ import com.commnetsoft.proxy.model.CallResult;
 import com.commnetsoft.proxy.model.UserInfo;
 import com.zjasm.captcha.UsernamePasswordCaptchaCredential;
 import com.zjasm.exception.*;
-import com.zjasm.util.Dbutil;
-import com.zjasm.util.IdmConfigUtil;
-import com.zjasm.util.PropertiesLoaderUtil;
-import com.zjasm.util.RSAUtils;
+import com.zjasm.model.Useryw;
+import com.zjasm.util.*;
 import org.apereo.cas.authentication.Credential;
 import org.apereo.cas.authentication.AuthenticationHandlerExecutionResult;
 import org.apereo.cas.authentication.PreventedException;
@@ -69,6 +69,8 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         //自定义操作库
         JdbcTemplate template = Dbutil.getInstance();
         String username=mycredential1.getUsername();
+        //读取config.properties配置
+        PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
 
         if("grlogin".equals(logintype)){//个人登录
             HttpServletRequest request = attributes.getRequest();
@@ -80,6 +82,25 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                 logger.info("获取用户信息，错误码："+user.getResult()+"，错误信息："+user.getErrmsg()+"。用户信息 "+user.getUsername());
                 if("0".equals(user.getResult())){
                     //TODO 获取用户信息成功， 相关业务
+                    //1、判断是否存在
+                    String ywRestURL = propertiesLoaderUtil.getOneProp("ywRestURL");
+                    String userResult =HttpRequestUtil.sendGet(ywRestURL+"/Personal/User/verifyUser", "loginName="+username, "utf-8");
+                    JSONObject m1= JSON.parseObject(userResult);//将json文本转化为jsonobject
+                    int m1code = (Integer)m1.get("code");
+                    if(m1code==0){//未授权
+                        //2、入库
+                        //重新组装实体类
+                        Useryw useryw = installUser(user);
+                        String userStr = JSON.toJSONString(useryw);
+                        JSONObject res = HttpPostJsonUtil.doPost(ywRestURL+"/Personal/User/addUser",userStr);
+                        int code = (Integer)res.get("code");
+                        if(code==1){
+                            logger.info("授权用户信息入库成功！");
+                        }else{
+                            logger.info("授权用户信息入库失败！"+res.get("message"));
+                        }
+                    }
+                    //3、登录信息返回
                     handlerResult = authOkResultPerson(attributes,username,user,mycredential1);
                 }
             }else{//认证失败
@@ -102,7 +123,6 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                 throw new NoUserException("用户不存在！");
             }
             //获取验证开关
-            PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
             boolean authIdmFlag = Boolean.parseBoolean(propertiesLoaderUtil.getOneProp("authIdmFlag"));
             logger.info("易和接入开关authIdmFlag："+authIdmFlag);
             if(authIdmFlag){
@@ -138,6 +158,42 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             }
         }
         return handlerResult;
+    }
+
+
+    private Useryw installUser(UserInfo user){
+        Useryw useryw = new Useryw();
+        useryw.setUserid(user.getUserid());
+        useryw.setAuthlevel(user.getAuthlevel());
+        useryw.setIdtype(user.getIdtype());
+        useryw.setUsername(user.getUsername());
+        useryw.setIdnum(user.getIdnum());
+        useryw.setPassport(user.getPassport());
+        useryw.setPermitlicense(user.getPermitlicense());
+        useryw.setTaiwanlicense(null);
+        useryw.setOfficerlicense(user.getOfficerlicense());
+        useryw.setGreencard(null);
+        useryw.setSex(user.getSex());
+        useryw.setNation(user.getNation());
+        useryw.setLoginname(user.getLoginname());
+        useryw.setEmail(user.getEmail());
+        useryw.setMobile(user.getMobile());
+        useryw.setPostcode(user.getPostcode());
+        useryw.setCakey(user.getCakey());
+        useryw.setBirthday(user.getBirthday());
+        useryw.setCountry(user.getCountry());
+        useryw.setProvince(user.getProvince());
+        useryw.setCity(user.getCity());
+        useryw.setOfficeaddress(user.getOfficeaddress());
+        useryw.setOfficephone(user.getOfficephone());
+        useryw.setOfficefax(user.getOfficefax());
+        useryw.setHomephone(user.getHomephone());
+        useryw.setHomeaddress(user.getHomeaddress());
+        useryw.setUseable(user.getUseable());
+        useryw.setOrderby(user.getOrderby());
+        useryw.setHeadpicture(null);
+        return useryw;
+
     }
 
     /**

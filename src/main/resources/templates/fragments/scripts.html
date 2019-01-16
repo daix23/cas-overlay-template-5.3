@@ -214,6 +214,55 @@ function getOrgListByCode(orgcoding){
 }
 */
 
+function isExistUser(loginName){
+    var url = "http://118.178.118.177:8080/RSComplat/rest/Personal/User/verifyUser";
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {loginName:loginName},
+            dataType: "json",
+            success: function(data){
+                //0:未授权，1：已授权，-1：错误
+                //console.log(data.code);
+                if(data.code==0){
+                    loginAuthorization();
+                }else if(data.code==1){
+                    yesAut();
+                }else{
+                    alert("授权失败！");
+                }
+            }
+        });
+}
+
+function loginAuthorization() {
+    $("#sectiontAu").css('display','none');
+    $("#secRem").css('display','none');
+    $("#loginbutton").css('display','none');
+    $("#regforget").css('display','none');
+    $("#loginAuth").css('display','block');
+}
+function yesAut(){
+    // 页面里，Javascript对明文进行加密：
+    var modulus = $('#hid_modulus').val(),
+        exponent = $('#hid_exponent').val();
+    var $password = $('#password');
+    var key = RSAUtils.getKeyPair(exponent, '', modulus);
+    var password = $password.val();
+    password = RSAUtils.encryptedString(key, password);
+    $password.val(password);
+
+    $("#loginbutton").attr("disabled", true);
+    $("#loginbutton").attr("value", "请稍等……");
+    $("#fm1").submit();
+}
+function noAut(){
+    $("#sectiontAu").css('display','block');
+    $("#secRem").css('display','block');
+    $("#loginbutton").css('display','block');
+    $("#regforget").css('display','block');
+    $("#loginAuth").css('display','none');
+}
 /**
  * 获取指定的URL参数值
  * URL:http://www.quwan.com/index?name=tyler

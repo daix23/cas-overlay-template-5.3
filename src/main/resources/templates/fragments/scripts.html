@@ -225,6 +225,7 @@ function checkUsPw(username,password) {
         $("#self-alert").html('<span>必须输入密码！</span>');
         return false;
     }
+    $("#self-alert").css("display","none");
     return true;
 }
 

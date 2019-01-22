@@ -214,6 +214,20 @@ function getOrgListByCode(orgcoding){
 }
 */
 
+function checkUsPw(username,password) {
+    if(username==""||username==undefined||username.trim()==""){
+        $("#self-alert").css("display","block");
+        $("#self-alert").html('<span>必须输入用户名！</span>');
+        return false;
+    }
+    if(password==""||password==undefined||password.trim()==""){
+        $("#self-alert").css("display","block");
+        $("#self-alert").html('<span>必须输入密码！</span>');
+        return false;
+    }
+    return true;
+}
+
 function isExistUser(loginName){
     var url = "http://118.178.118.177:8080/RSComplat/rest/Personal/User/verifyUser";
         $.ajax({
@@ -229,7 +243,8 @@ function isExistUser(loginName){
                 }else if(data.code==1){
                     yesAut();
                 }else{
-                    alert("授权失败！");
+                    $("#self-alert").css("display","block");
+                    $("#self-alert").html('<span>授权失败！</span>');
                 }
             }
         });

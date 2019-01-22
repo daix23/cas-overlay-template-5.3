@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/webflow">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -27,6 +27,8 @@
                     <form method="post" id="fm1" th:object="${credential}" action="login">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
                             <span th:each="err : ${#fields.errors('*')}" th:utext="${err}">Example error</span>
+                        </div>
+                        <div class="alert alert-danger" id="self-alert" style="display:none">
                         </div>
 
                         <!--<h3 th:utext="#{screen.welcome.instructions}">Enter your Username and Password</h3>-->
@@ -234,7 +236,11 @@
                                 var logintype = $("#logintype").val();
                                 if(logintype=="grlogin"){
                                     var username = $('#username').val();
-                                    isExistUser(username);
+                                    var password = $('#password').val();
+                                    var flag = checkUsPw(username,password);
+                                    if(flag){
+                                        isExistUser(username);
+                                    }
                                 }else{
                                     yesAut();
                                 }

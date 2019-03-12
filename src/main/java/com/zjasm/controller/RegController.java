@@ -67,31 +67,49 @@ public class RegController {
     }*/
 
     @GetMapping("grTicket")
-    public void grTicket(HttpServletRequest request, HttpServletResponse response){
+    public void grTicket(HttpServletRequest request, HttpServletResponse response) throws Exception{
         String ticket = request.getParameter("ticket");//获取票据
-        String sp = request.getParameter("sp");//具体事项页面地址 如http://aa.com/item?id=3232
-        SsoClient client = SsoClient.getInstance();//单点登录工具
-//       	client.initConfig("test", "zjgwypwd", "http://puser.zjzwfw.gov.cn/sso/");
-        //登录认证
-        CallResult cr = client.login(request, ticket);
-        logger.info("单点登录，错误码："+cr.getResult()+"，错误信息："+cr.getErrmsg()+"。 ");
-        if("0".equals(cr.getResult())){//认证成功登录系统
-            UserInfo user = client.getUser(request);
-            logger.info("获取用户信息，错误码："+user.getResult()+"，错误信息："+user.getErrmsg()+"。用户信息 "+user.getUsername());
-            if("0".equals(user.getResult())){
-                //TODO 获取用户信息成功， 相关业务
-                logger.info("获取用户信息成功！");
-                //TODO
-                if(sp == null){//跳转到首页
+        String execution = request.getParameter("execution");
+        if(ticket!=null&&!"".equals(ticket)){
+            String sp = request.getParameter("sp");//具体事项页面地址 如http://aa.com/item?id=3232
+            SsoClient client = SsoClient.getInstance();//单点登录工具
+            //client.initConfig("test", "zjgwypwd", "http://puser.zjzwfw.gov.cn/sso/");
+            //登录认证
+            CallResult cr = client.login(request, ticket);
+            logger.info("单点登录，错误码："+cr.getResult()+"，错误信息："+cr.getErrmsg()+"。 ");
+            if("0".equals(cr.getResult())){//认证成功登录系统
+                UserInfo user = client.getUser(request);
+                logger.info("获取用户信息，错误码："+user.getResult()+"，错误信息："+user.getErrmsg()+"。用户信息 "+user.getUsername());
+                if("0".equals(user.getResult())){
+                    //TODO 获取用户信息成功， 相关业务
+                    logger.info("获取用户信息成功！");
+                    //TODO
+                    if(sp == null){//跳转到首页
 
-                }else{//跳转到具体事项页面
+                    }else{//跳转到具体事项页面
 
+                    }
                 }
+            }else{//认证失败
+                logger.info("单点登录失败，错误码："+cr.getResult()+"，错误信息："+cr.getErrmsg()+"。 ");
+                String url = ConfigHelper.getProperty("url");
+                String servicecode = ConfigHelper.getProperty("servicecode");
             }
-        }else{//认证失败
-            logger.info("单点登录失败，错误码："+cr.getResult()+"，错误信息："+cr.getErrmsg()+"。 ");
-            String url = ConfigHelper.getProperty("url");
-            String servicecode = ConfigHelper.getProperty("servicecode");
+            /*String postUrl = "http://localhost:8080/cas/login";
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("username", "fbdw");
+            //map.put("password", "123456");
+            map.put("_eventId", "submit");
+            map.put("logintype", "grlogin");
+            map.put("execution", "086fa9f7-2041-478d-92b4-44dfbd1fecea_ZXlKaGJHY2lPaUpJVXpVeE1pSjkuTFgvT3hUOHFkenZvQnRUck5uY0podEozaEdPRldkOFo0ZzFmalBKTVVOa2tpK3Nnd2VYa1FBb21sMWx0WkFoMVpUWnNmNStta1hGNEJ1SHZoTFJtVjhZcmJyOXUxRy9NV3FKLytXRk5IUjc5R3FHOVRFSWl5bm5kWFdOTE51ZjUvZFJtV05UOWVDNnNVb3BQL0orL3VwWkdzRVdrMm1RYkYxTEdYOXdKQ2l1NTRCRWlUNmhLUFJib3dqN09SYlJPT1oyWjl3MDFyQUl6WVduanRPRy9nN1FCU1RsdFlpO" +
+                    "VpzMHRxcnZMYzBsUFpHN01QRVZ1R2xNMzc2cDJ0TnZyRGFHRnlYdFE0T2k2TWU3VXpsL0F1WlF2RzluN0Fxam9CaUlrZEhzSUZKM2JFdmE0TlkwM3lKU0ovekJrYXMvUElIZVNNQk14QXowZFBLVE5IYVAyNTdNZ3JiRUIrcVJ2Z1hubGNVMXZKZlpnTHJ1SGpvQnZ4T01vQ1ArVDlCbVpBSUJwdEF1aks5V1c2andQbWFxeTk0dkJnYzBEUWMyQ21IdWRTRkpMVTg3V3N6dDI3Y0x2Zldtc1R3R0VnSHF4Q05UM0hEYWRHcXg3bWFZTXgrdVJVU1p1UmpyYlBma09FbzBJcWZuKytZa1BOTWNabE45Yk5NZTZQRkkvSG" +
+                    "k3cnNJZDYxWHFKSkxqc081NnhvT085TW50Vmo2ekFaOVlEWDZIUlJyRkJvZ0FJWitrS0lDUlZCU015RGVJZS92YWZEMnRKa3BPK3FwOUU2YWpucDF5cWdkTDdob0VYUFVEMElSV2wwbjdpd1kzYlU2Qk5YNWUwaVM0bUc2YlZQM0pGdEdhMUNsV3ozb2ltK1pzVHhtTlRsRjRRUzJIb1kyVmhPT3pNc0w5UnE5ak5Mc0NVWjJWZkIzWUY0WXo1SXlaelB5WnI2dU80bDJ4eFk4MjZIUVVzU2FuK0g1RXNYTnJIdWluWHU4SnZyWmJ3ODNlL2VaTHlhK2pQMWNkQU1aZk91ZkhvbTluaGNrYkEwQityTWNWNHBDWTZWaUdZSE5" +
+                    "Iczd2TFhkTUZEUUpKR09UcUZVeHpQWGhON0V1VFpxa20rV3owbk03bnZydEFUU3VxelFSc1g2RXlOdWFTU3FrbjBkMzE1S0VCMmlIYllhQnMzSWZ6V043MHh1NGhkdnZ5Z0cwakZzN21JVEptNzFFaUhUQ0tTenowUFluUEhIZHQzc2lZaSswSTlDeDVxclBLMDk3V0dkOHRSOUpkM3oxUlEvN2g4elIxd0JGOWVmVUw5M3l1RktIVTZva1RHNUVMNmdaZlhicSsxWWp1cWNOc0hZQUdpZEdvUDk0djdFd0E4cnQ2UEtld1o4eWgvYjJWcGZjd2RNNEdrVXZpT1gwVi9PRkUxMTFvRTArdzdvYnJKZ00zYWVyUkNVSEZla0J5NGxC" +
+                    "OFZnYlhHdGJrS251cE1IbHJJSVdaVldsWnFXSkFEQkNoVWhHL0hnU2dNPS5iRE8zTTZibDhlN3k1Q0h1TXpzcjNwVXY1MURGeHRmNzBJaFRKUXhJRXhleWlRNXZoYXRGbVl1R3FzaE5GVHZNaVI2ZHZueU5lc3g2MjVXTjVveFZGQQ==");
+            System.out.println("Post请求2:" + HttpRequestUtil.sendPost(postUrl, map, "utf-8"));*/
+        }else{
+            //TODO 跳转登录页
+            response.sendRedirect("login");
         }
     }
 
@@ -226,28 +244,24 @@ public class RegController {
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String orgcoding = request.getParameter("orgcoding");
-        StringBuilder sb=new StringBuilder();
-        sb.append("SELECT orgcoding,devcoding,orgname FROM s_orginfo WHERE ISDEL=0 ");
-        if (!CommonUtil.isNullOrEmpty(orgcoding)) {
-            sb.append(" AND orgcoding LIKE '%"+orgcoding+"%' ");
-        }else{
-            orgcoding = "";
-        }
-        String scope = "";
-        if (!CommonUtil.isNullOrEmpty(scope) && scope.equals("1")) {
-            sb.append("");
-        }else{
-            sb.append("  AND LENGTH(orgcoding) = LENGTH('"+orgcoding+"') + 3  ");
-        }
-        sb.append(" ORDER BY orderby ASC");
-        String sql = sb.toString();
-        //自定义操作库
-        JdbcTemplate template = Dbutil.getInstance();
-        List list = template.queryForList(sql);
         HashMap<String, Object> jsonObj = new HashMap<String, Object>();
-        jsonObj.put("result", list);
-        JSONObject json =  new JSONObject(jsonObj);
-        out.write(json.toString());
+        String jsonStr = null;
+        if (!CommonUtil.isNullOrEmpty(orgcoding)) {
+            StringBuilder sb=new StringBuilder();
+            sb.append("SELECT orgcoding,devcoding,orgname FROM s_orginfo WHERE ISDEL=0 ");
+            sb.append(" AND orgcoding LIKE '%"+orgcoding+"%' ");
+            sb.append("  AND LENGTH(orgcoding) = LENGTH('"+orgcoding+"') + 3  ");
+            sb.append(" ORDER BY orderby ASC");
+            String sql = sb.toString();
+            //自定义操作库
+            JdbcTemplate template = Dbutil.getInstance();
+            List list= template.queryForList(sql);
+            jsonObj.put("result", list);
+            jsonStr =  new JSONObject(jsonObj).toString();
+        }else{
+            jsonStr = "{\"result\":[{\"orgcoding\":\"001\",\"devcoding\":\"001\",\"orgname\":\"浙江省\"}]}";
+        }
+        out.write(jsonStr);
         out.flush();
         out.close();
         return null;

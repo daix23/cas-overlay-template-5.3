@@ -1,4 +1,3 @@
-<script type="text/javascript" th:src="@{#{webjars.jquerycookie.js}}"></script>
 <script src="//www.google.com/recaptcha/api.js" async defer th:if="${recaptchaSiteKey}"></script>
 <script th:src="@{#{webjars.bootstrapmin.js}}"></script>
 
@@ -135,7 +134,7 @@ var setting ={
         enable: true,
         url:/*[[@{/getOrg}]]*/,
         //url: "http://dlxxbs.zjzwfw.gov.cn/ReportServer/rest/function/org/get",
-        autoParam: ["id=orgcoding"],//变化参数
+        autoParam: ["poid=oid"],//变化参数
         //otherParam:{"otherParam":"zTreeAsyncTest"},固定参数
         type: "get",
         dataType:'json',
@@ -149,14 +148,14 @@ var setting ={
 function filterOrg(treeId, parentNode, childNodes) {
     var nodes = [];
     $.each(childNodes.result, function (i, m) {
-        var pid;
+        /*var pid;
         if (m.orgcoding.length == 3)
             pid = "0";
         else
-            pid = m.orgcoding.substring(0, m.orgcoding.length - 3);
+            pid = m.orgcoding.substring(0, m.orgcoding.length - 3);*/
         nodes.push({
             id: m.orgcoding,
-            pId: pid,
+            poid: m.oid,
             devcoding: m.devcoding,
             name: m.orgname,
             isParent: true,

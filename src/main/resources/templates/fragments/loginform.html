@@ -25,6 +25,8 @@
                 </div>
                 <div class="card-body" style="padding-bottom:0.25rem;">
                     <form method="post" id="fm1" th:object="${credential}" action="login">
+                        <input id="hidTicket" type="hidden" name="hidTicket" value="">
+                        <input id="hidLogintype" type="hidden" name="hidLogintype" value="">
                         <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
                             <span th:each="err : ${#fields.errors('*')}" th:utext="${err}">Example error</span>
                         </div>
@@ -113,8 +115,8 @@
                                 </span>
                                 </div>
                             </section>
-                            <section class="form-group">
-                               <!-- <label for="captcha" th:utext="#{screen.welcome.label.captcha}">captcha</label>-->
+                           <!-- <section class="form-group">
+                               &lt;!&ndash; <label for="captcha" th:utext="#{screen.welcome.label.captcha}">captcha</label>&ndash;&gt;
                                 <div>
                                     <i class="imgInput" style="background-image: url(images/captcha.png);"></i>
                                     <input class="form-control required" style="padding-left:23px;float: left;width: 71%;"
@@ -128,7 +130,7 @@
                                     <img th:src="@{/captcha}" id="captchaCode" style="padding-left:5px;width: 95px;height:38px;cursor:pointer;"
                                          th:title="#{screen.welcome.change.captcha}" onclick="changeCaptcha()">
                                 </div>
-                            </section>
+                            </section>-->
                             <section class="form-check" th:if="${passwordManagementEnabled && param.doChangePassword != null}">
                             <p>
                                 <input type="checkbox" name="doChangePassword" id="doChangePassword"
@@ -218,6 +220,17 @@
                             var url = window.location.href;
                             var urlLen = url.length;
                             var ser = getParam("service");
+                            var hidTicket = getParam("ticket");
+                            var hidLogintype = getParam("logintype");
+                            if(hidTicket!=null&&hidTicket!=undefined&&hidLogintype!=null&&hidLogintype!=undefined){
+                                $('#username').val("xxx");
+                                $('#password').val("xxxxxx");
+                                $('#hidTicket').val(hidTicket);
+                                $('#hidLogintype').val(hidLogintype);
+                                $("#loginbutton").attr("disabled", true);
+                                $("#loginbutton").attr("value", "请稍等……");
+                                $("#fm1").submit();
+                            }
                             if(ser!=null&&ser!=undefined){
                                 var substr = url.substring(url.indexOf(ser)+ser.length,urlLen);
                                 if(ser.indexOf("//") != -1 ){

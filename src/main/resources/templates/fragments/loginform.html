@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 
     <title>Login Form Fragment</title>
-    <link href="../../static/css/cas.css" rel="stylesheet" th:remove="tag" />
 </head>
 <body>
 <main role="main" class="container mt-3 mb-3">
@@ -214,6 +213,10 @@
                     <div th:unless="${passwordManagementEnabled}" class="fontWR" id="regforget">
                     </div>
 
+                    <link rel="stylesheet" href="../static/css/zTreeStyle/zTreeStyle.css" th:href="@{${#themes.code('cas.zTreeStyle.css.file')}}"/>
+                    <link rel="stylesheet" th:href="@{${#themes.code('cas.selfZTree.css.file')}}"/>
+                    <script type="text/javascript" th:src="@{#{webjars.jquerymin.js}}"></script>
+
                     <script type="text/javascript" th:inline="javascript">
                         var i = [[#{screen.welcome.button.loginwip}]]
                         $( document ).ready(function() {
@@ -269,8 +272,7 @@
                         });
 
                     </script>
-
-                    <!--<div th:replace="fragments/loginsidebar :: loginsidebar" />-->
+                    <script th:replace="fragments/scripts"/>
                 </div>
 
             </div>

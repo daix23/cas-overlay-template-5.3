@@ -71,7 +71,8 @@ public class RegController {
         String ticket = request.getParameter("ticket");//获取票据
         String execution = request.getParameter("execution");
         if(ticket!=null&&!"".equals(ticket)){
-            String sp = request.getParameter("sp");//具体事项页面地址 如http://aa.com/item?id=3232
+            response.sendRedirect("login?ticket="+ticket+"&logintype=gryh");
+            /*String sp = request.getParameter("sp");//具体事项页面地址 如http://aa.com/item?id=3232
             SsoClient client = SsoClient.getInstance();//单点登录工具
             //client.initConfig("test", "zjgwypwd", "http://puser.zjzwfw.gov.cn/sso/");
             //登录认证
@@ -85,16 +86,18 @@ public class RegController {
                     logger.info("获取用户信息成功！");
                     //TODO
                     if(sp == null){//跳转到首页
-
+                        //TODO 跳转登录页
+                        response.sendRedirect("login?ticket="+ticket);
                     }else{//跳转到具体事项页面
-
+                        //TODO 跳转登录页
+                        response.sendRedirect(sp);
                     }
                 }
             }else{//认证失败
                 logger.info("单点登录失败，错误码："+cr.getResult()+"，错误信息："+cr.getErrmsg()+"。 ");
                 String url = ConfigHelper.getProperty("url");
                 String servicecode = ConfigHelper.getProperty("servicecode");
-            }
+            }*/
             /*String postUrl = "http://localhost:8080/cas/login";
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("username", "fbdw");
@@ -185,6 +188,7 @@ public class RegController {
          * 收到票据ticket，进行票据认证。
          */
         String ticket = request.getParameter("ticket");
+        response.sendRedirect("login?ticket="+ticket+"&logintype=dwyh");
         //调用IDMAuth的票据认证方法,返回认证结果
         TicketValidationResult ticketValidation = client.ticketValidation(request, ticket);
         if (IDMClient.SUCCESS.equals(ticketValidation.getResult())) {
@@ -304,6 +308,7 @@ public class RegController {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
+            LogUtil.LoginOut(request,"LOGINOUT","1","登出成功");
             String service = request.getParameter("service");
             if(service==null){
                 response.sendRedirect("logout");

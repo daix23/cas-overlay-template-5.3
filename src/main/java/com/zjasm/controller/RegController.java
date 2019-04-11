@@ -247,14 +247,16 @@ public class RegController {
     public String getOrg(HttpServletRequest request, HttpServletResponse response) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        String orgcoding = request.getParameter("orgcoding");
+        String oid = request.getParameter("oid");
         HashMap<String, Object> jsonObj = new HashMap<String, Object>();
         String jsonStr = null;
-        if (!CommonUtil.isNullOrEmpty(orgcoding)) {
+        if (!CommonUtil.isNullOrEmpty(oid)) {
             StringBuilder sb=new StringBuilder();
-            sb.append("SELECT orgcoding,devcoding,orgname FROM s_orginfo WHERE ISDEL=0 ");
-            sb.append(" AND orgcoding LIKE '%"+orgcoding+"%' ");
-            sb.append("  AND LENGTH(orgcoding) = LENGTH('"+orgcoding+"') + 3  ");
+            //sb.append("SELECT orgcoding,devcoding,orgname FROM s_orginfo WHERE ISDEL=0 ");
+            //sb.append(" AND orgcoding LIKE '%"+orgcoding+"%' ");
+            //sb.append("  AND LENGTH(orgcoding) = LENGTH('"+orgcoding+"') + 3  ");
+            sb.append("SELECT id,orgcoding,devcoding,orgname,oid,poid FROM s_orginfo WHERE ISDEL=0 ");
+            sb.append(" AND POID= '"+oid+"' ");
             sb.append(" ORDER BY orderby ASC");
             String sql = sb.toString();
             //自定义操作库
@@ -263,7 +265,7 @@ public class RegController {
             jsonObj.put("result", list);
             jsonStr =  new JSONObject(jsonObj).toString();
         }else{
-            jsonStr = "{\"result\":[{\"orgcoding\":\"001\",\"devcoding\":\"001\",\"orgname\":\"浙江省\"}]}";
+            jsonStr = "{\"result\":[{\"oid\":\"0\",\"orgcoding\":\"001\",\"devcoding\":\"001\",\"orgname\":\"浙江省\"}]}";
         }
         out.write(jsonStr);
         out.flush();

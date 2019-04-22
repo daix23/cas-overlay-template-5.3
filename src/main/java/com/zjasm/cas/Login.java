@@ -133,6 +133,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             String orgcode = mycredential1.getOrgcode();
             String devcoding = mycredential1.getDevcoding();//组织域名
             String logintype = mycredential1.getLogintype();//登录类型
+            username = username+"."+devcoding;
             /*String right = attributes.getRequest().getSession().getAttribute("captcha").toString();
             if(!captcha.equalsIgnoreCase(right)){
                 throw new InvalidCaptchaException("验证码错误！");

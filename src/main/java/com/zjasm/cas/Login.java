@@ -172,14 +172,14 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         handlerResult = authOkResultPerson(attributes,username,user,mycredential1);
                     }
                 }else{//认证失败
-                    LogUtil.LoginOut(request,"LOGININ","0","登录失败，"+callResult.getErrmsg());
+                    LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+callResult.getErrmsg());
                     logger.info("个人单点登录失败，错误码："+callResult.getResult()+"，错误信息："+callResult.getErrmsg()+"。 ");
                     throw new LoginException();
                 }
                 //throw new NoOpenException("此功能暂未开放！");
             }else{//法人登录
                 if(orgcode==null||"".equals(orgcode)){
-                    LogUtil.LoginOut(request,"LOGININ","0","登录失败，组织不能为空！");
+                    LogUtil.LoginOut(request,"LOGIN","0","登录失败，组织不能为空！");
                     throw new InvalidOrgException("组织不能为空！");
                 }
                 //查询数据库加密的的密码
@@ -190,7 +190,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                             "AND u.deleteflag=0 and ref.isdel=0 and org.isdel=0  order by org.orderby asc LIMIT 1";
                     user = template.queryForMap(userOrgSql);
                 }catch (Exception e){
-                    LogUtil.LoginOut(request,"LOGININ","0","登录失败，用户不存在！");
+                    LogUtil.LoginOut(request,"LOGIN","0","登录失败，用户不存在！");
                     throw new NoUserException("用户不存在！");
                 }
                 //获取验证开关
@@ -214,7 +214,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
                     }else {
                         String errmsg = idValiResult.getErrmsg();
-                        LogUtil.LoginOut(request,"LOGININ","0","登录失败，"+errmsg);
+                        LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
                         logger.info("易和用户登录失败："+errmsg);
                         throw new NoAuthException(errmsg);
                     }
@@ -225,13 +225,13 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                     if(pwd.equals(user.get("localpwd").toString())){
                         handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
                     }else{
-                        LogUtil.LoginOut(request,"LOGININ","0","登录失败，密码错误！");
+                        LogUtil.LoginOut(request,"LOGIN","0","登录失败，密码错误！");
                         throw new InvalidPasswordException("密码错误！");
                     }
                 }
             }
         //}
-        LogUtil.LoginOut(request,"LOGININ","1","登录成功");
+        LogUtil.LoginOut(request,"LOGIN","1","登录成功");
         return handlerResult;
     }
 

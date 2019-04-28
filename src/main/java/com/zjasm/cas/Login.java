@@ -216,7 +216,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         String errmsg = idValiResult.getErrmsg();
                         LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
                         logger.info("易和用户登录失败："+errmsg);
-                        throw new NoAuthException(errmsg);
+                        throw new IdmLogException(errmsg);
                     }
                 }else{//本地验证
                     //给数据进行md5加密

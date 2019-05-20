@@ -275,6 +275,7 @@ public class RegController {
 
     @GetMapping(value = "/logoutCas")
     public void logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        HttpSession session = request.getSession();
         try{
             logger.info("统一登出入口：logoutCas");
             //获取验证开关
@@ -284,7 +285,6 @@ public class RegController {
                 String servicecode = propertiesLoaderUtil.getOneProp("servicecode");
                 String servicepwd = propertiesLoaderUtil.getOneProp("servicepwd");
                 String idmUrl = propertiesLoaderUtil.getOneProp("idmUrl");
-                HttpSession session = request.getSession();
                 Object idmTokenObj = session.getAttribute("idmToken");
                 String idmToken = null;
                 if(idmTokenObj!=null){
@@ -310,6 +310,8 @@ public class RegController {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
+            session.removeAttribute("username");
+            //session.invalidate();
             LogUtil.LoginOut(request,"LOGINOUT","1","登出成功");
             String service = request.getParameter("service");
             if(service==null){
@@ -319,6 +321,30 @@ public class RegController {
             }
         }
     }
+
+
+    @GetMapping(value = "checkLogin")
+    public void checkLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        HashMap<String, Object> jsonObj = new HashMap<String, Object>();
+        HttpSession session = request.getSession();
+        Object usernameObj = session.getAttribute("username");
+        String username = "";
+        if(usernameObj!=null){
+            username = usernameObj.toString();
+            jsonObj.put("message", username);
+            jsonObj.put("checkResult", true);
+        }else{
+            jsonObj.put("checkResult", false);
+        }
+        jsonObj.put("status", "OK");
+        JSONObject json =  new JSONObject(jsonObj);
+        out.write(json.toString());
+        out.flush();
+        out.close();
+    }
+
 
     @Autowired
     @Qualifier("servicesManager")

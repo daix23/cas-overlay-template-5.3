@@ -206,8 +206,9 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                     logger.info("易和接入prop："+prop.getUrl());
                     IDMClient client = new IDMClient(prop);
                     IdValidationResult idValiResult=client.idValidation(attributes.getRequest(), nameConcat, pwdStr);
-                    logger.info("易和接入idValiResult："+idValiResult.getResult());
-                    if (IDMClient.SUCCESS.equals(idValiResult.getResult())) {
+                    String valeResult = idValiResult.getResult();
+                    logger.info("易和接入idValiResult："+valeResult);
+                    if (IDMClient.SUCCESS.equals(valeResult)) {
                         logger.info("易和用户登录成功");
                         String idmToken = idValiResult.getToken();
                         session.setAttribute("idmToken", idmToken);
@@ -216,7 +217,11 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         String errmsg = idValiResult.getErrmsg();
                         LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
                         logger.info("易和用户登录失败："+errmsg);
-                        throw new IdmLogException(errmsg);
+                        if("idvalidation_pwd_fail".equalsIgnoreCase(valeResult)){
+                            throw new InvalidPasswordException("密码错误！");
+                        }else{
+                            throw new IdmLogException(errmsg);
+                        }
                     }
                 }else{//本地验证
                     //给数据进行md5加密

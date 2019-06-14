@@ -62,7 +62,6 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         HttpServletRequest request = attributes.getRequest();
         HttpSession session = attributes.getRequest().getSession();
         String username=mycredential1.getUsername();
-        session.setAttribute("username", username);
         //读取config.properties配置
         PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
         /*String hidTicket = mycredential1.getHidTicket();
@@ -98,6 +97,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                             }
                         }
                         //3、登录信息返回
+                        session.setAttribute("username", username);
                         handlerResult = authOkResultPerson(attributes,username,user,mycredential1);
                     }
                 }else{//认证失败
@@ -118,6 +118,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                     session.setAttribute("idmToken", idmToken);
                     String username = (String)user.get("username");
                     String orgcode =  (String)user.get("orgcode");
+                    session.setAttribute("username", username);
                     handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode);
                 } else {
                     throw new LoginException();
@@ -144,8 +145,10 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             if("grlogin".equals(logintype)){//个人登录
                 SsoClient client = SsoClient.getInstance();//单点登录工具
                 CallResult callResult= client.login(request,username,null,pwdStr);
-                logger.info("个人单点登录，错误码："+callResult.getResult()+"，错误信息："+callResult.getErrmsg()+"。 ");
-                if("0".equals(callResult.getResult())){//认证成功登录系统
+                String resultStr = callResult.getResult();
+                String errmsg = callResult.getErrmsg();
+                logger.info("个人单点登录，错误码："+resultStr+"，错误信息："+errmsg+"。 ");
+                if("0".equals(resultStr)){//认证成功登录系统
                     UserInfo user = client.getUser(request);
                     logger.info("获取用户信息，错误码："+user.getResult()+"，错误信息："+user.getErrmsg()+"。用户信息 "+user.getUsername());
                     if("0".equals(user.getResult())){
@@ -169,12 +172,17 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                             }
                         }
                         //3、登录信息返回
+                        session.setAttribute("username", username);
                         handlerResult = authOkResultPerson(attributes,username,user,mycredential1);
                     }
+                }else if("6401".equals(resultStr)){
+                    LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
+                    logger.info("个人单点登录失败，错误码："+resultStr+"，错误信息："+errmsg+"。 ");
+                    throw new LoginGRException(errmsg);
                 }else{//认证失败
-                    LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+callResult.getErrmsg());
-                    logger.info("个人单点登录失败，错误码："+callResult.getResult()+"，错误信息："+callResult.getErrmsg()+"。 ");
-                    throw new LoginException();
+                    LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
+                    logger.info("个人单点登录失败，错误码："+resultStr+"，错误信息："+errmsg+"。 ");
+                    throw new LoginException(errmsg);
                 }
                 //throw new NoOpenException("此功能暂未开放！");
             }else{//法人登录
@@ -212,6 +220,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                         logger.info("易和用户登录成功");
                         String idmToken = idValiResult.getToken();
                         session.setAttribute("idmToken", idmToken);
+                        session.setAttribute("username", username);
                         handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
                     }else {
                         String errmsg = idValiResult.getErrmsg();
@@ -228,6 +237,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                     logger.info("本地用户验证");
                     String pwd = new CustomPasswordEncoder().encode(pwdStr);
                     if(pwd.equals(user.get("localpwd").toString())){
+                        session.setAttribute("username", username);
                         handlerResult = authOkResult(attributes,username,user,mycredential1,orgcode );
                     }else{
                         LogUtil.LoginOut(request,"LOGIN","0","登录失败，密码错误！");

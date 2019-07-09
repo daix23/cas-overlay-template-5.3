@@ -61,6 +61,9 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         AuthenticationHandlerExecutionResult handlerResult = null;
         HttpServletRequest request = attributes.getRequest();
         HttpSession session = attributes.getRequest().getSession();
+        AppliProUtil appliProUtil = AppliProUtil.getInstance();
+        int sessionTimeout = Integer.valueOf(appliProUtil.getOneProp("server.session.timeout"));
+        session.setMaxInactiveInterval(sessionTimeout);//单位为秒
         String username=mycredential1.getUsername();
         //读取config.properties配置
         PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();
@@ -134,7 +137,6 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             String orgcode = mycredential1.getOrgcode();
             String devcoding = mycredential1.getDevcoding();//组织域名
             String logintype = mycredential1.getLogintype();//登录类型
-            username = username+"."+devcoding;
             /*String right = attributes.getRequest().getSession().getAttribute("captcha").toString();
             if(!captcha.equalsIgnoreCase(right)){
                 throw new InvalidCaptchaException("验证码错误！");
@@ -145,6 +147,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
             if("grlogin".equals(logintype)){//个人登录
                 SsoClient client = SsoClient.getInstance();//单点登录工具
                 CallResult callResult= client.login(request,username,null,pwdStr);
+                //CallResult callResult = client.login(username,"",pwdStr);
                 String resultStr = callResult.getResult();
                 String errmsg = callResult.getErrmsg();
                 logger.info("个人单点登录，错误码："+resultStr+"，错误信息："+errmsg+"。 ");
@@ -186,6 +189,7 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                 }
                 //throw new NoOpenException("此功能暂未开放！");
             }else{//法人登录
+                username = username+"."+devcoding;
                 if(orgcode==null||"".equals(orgcode)){
                     LogUtil.LoginOut(request,"LOGIN","0","登录失败，组织不能为空！");
                     throw new InvalidOrgException("组织不能为空！");

@@ -182,6 +182,10 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
                     LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
                     logger.info("个人单点登录失败，错误码："+resultStr+"，错误信息："+errmsg+"。 ");
                     throw new LoginGRException(errmsg);
+                }else if("3430".equals(resultStr)){
+                    LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
+                    logger.info("个人单点登录失败，错误码："+resultStr+"，错误信息："+errmsg+"。 ");
+                    throw new InvalidPasswordException(errmsg);
                 }else{//认证失败
                     LogUtil.LoginOut(request,"LOGIN","0","登录失败，"+errmsg);
                     logger.info("个人单点登录失败，错误码："+resultStr+"，错误信息："+errmsg+"。 ");

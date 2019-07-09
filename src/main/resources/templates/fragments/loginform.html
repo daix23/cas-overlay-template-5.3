@@ -261,6 +261,12 @@
                                     yesAut();
                                 }
                             });
+                            //回车提交事件
+                            $("body").keydown(function() {
+                                if (event.keyCode == "13") {//keyCode=13是回车键
+                                    $("#loginbutton").click();
+                                }
+                            });
                             var logintype = $("#logintype").val();
                             if(logintype=="grlogin"){
                                 grLogin();

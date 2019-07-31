@@ -274,6 +274,25 @@ function noAut(){
     $("#regforget").css('display','block');
     $("#loginAuth").css('display','none');
 }
+
+function setcookie(){
+    $.cookie('rememberMe',"true",{expires:7}); //创建cookie 记住我; 值为true ;有效期为60天
+    $.cookie('username',$("#username").val(),{expires:7});
+    $.cookie('password',$("#password").val(),{expires:7});
+    $.cookie('orgcode',$("#orgcode").val(),{expires:7});
+    $.cookie('orgcodeVal',$("#orgcodeVal").val(),{expires:7});
+    $.cookie('devcodingVal',$("#devcodingVal").val(),{expires:7});
+}
+
+function clrcookie(){
+    $.cookie('rememberMe',"false"); //设置cookie记住我的值为false
+    $.cookie('username',null); //删除cookie中的值
+    $.cookie('password',null); //删除cookie中的值
+    $.cookie('orgcode',null); //删除cookie中的值
+    $.cookie('orgcodeVal',null); //删除cookie中的值
+    $.cookie('devcodingVal',null); //删除cookie中的值
+}
+
 /**
  * 获取指定的URL参数值
  * URL:http://www.quwan.com/index?name=tyler

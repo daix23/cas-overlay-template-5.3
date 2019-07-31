@@ -216,6 +216,7 @@
                     <link rel="stylesheet" href="../static/css/zTreeStyle/zTreeStyle.css" th:href="@{${#themes.code('cas.zTreeStyle.css.file')}}"/>
                     <link rel="stylesheet" th:href="@{${#themes.code('cas.selfZTree.css.file')}}"/>
                     <script type="text/javascript" th:src="@{#{webjars.jquerymin.js}}"></script>
+                    <script type="text/javascript" th:src="@{#{webjars.jquerycookie.js}}"></script>
 
                     <script type="text/javascript" th:inline="javascript">
                         var i = [[#{screen.welcome.button.loginwip}]]
@@ -248,6 +249,27 @@
                             //先显示头部
                             $("header").css('display','block');
                             initZTree();
+
+                            //当勾上“记住我”时保存cookie，否则清空
+                            $("#rememberMe").click(function(){ //获取a标签对象, 为a标签绑定单击事件;
+                                if($('#rememberMe').is(':checked')) {
+                                    setcookie();//不存在(hasClass()返回flase)   设置cookie
+                                }else{
+                                    clrcookie(); // 存在 清除cookie,
+                                }
+                            });
+
+                            if ($.cookie('rememberMe') == "true") { //窗体加载时候  读取cookie中rememberme的值是否等于true
+                                $("#username").val($.cookie('username'));//设置组织名称,显示
+                                $("#password").val($.cookie('password'));//设置组织名称,显示
+                                $("#orgcode").val($.cookie('orgcode'));//设置组织名称,显示
+                                $("#orgcodeVal").val($.cookie('orgcodeVal'));//设置组织编号,传值
+                                $("#devcodingVal").val($.cookie('devcodingVal'));//设置组织域名,传值
+                                $("#rememberMe").attr("checked",true);
+                            } else {
+                                $("#rememberMe").attr("checked",false);
+                            }
+
                             $("#loginbutton").click(function () {
                                 var logintype = $("#logintype").val();
                                 if(logintype=="grlogin"){

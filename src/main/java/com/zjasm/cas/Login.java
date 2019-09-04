@@ -34,7 +34,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.security.auth.login.LoginException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -60,10 +62,15 @@ public class Login extends AbstractPreAndPostProcessingAuthenticationHandler {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         AuthenticationHandlerExecutionResult handlerResult = null;
         HttpServletRequest request = attributes.getRequest();
+        HttpServletResponse response = attributes.getResponse();
         HttpSession session = attributes.getRequest().getSession();
         AppliProUtil appliProUtil = AppliProUtil.getInstance();
         int sessionTimeout = Integer.valueOf(appliProUtil.getOneProp("server.session.timeout"));
         session.setMaxInactiveInterval(sessionTimeout);//单位为秒
+        String sessionid=session.getId();
+        Cookie cookie=new Cookie("JSESSIONID",sessionid);
+        cookie.setMaxAge(sessionTimeout);
+        response.addCookie(cookie);
         String username=mycredential1.getUsername();
         //读取config.properties配置
         PropertiesLoaderUtil propertiesLoaderUtil = PropertiesLoaderUtil.getInstance();

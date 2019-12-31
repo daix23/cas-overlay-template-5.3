@@ -272,15 +272,15 @@
 
                             $("#loginbutton").click(function () {
                                 var logintype = $("#logintype").val();
-                                if(logintype=="grlogin"){
-                                    var username = $('#username').val();
-                                    var password = $('#password').val();
-                                    var flag = checkUsPw(username,password);
-                                    if(flag){
+                                var username = $('#username').val();
+                                var password = $('#password').val();
+                                var flag = checkUsPw(username,password);
+                                if(flag){
+                                    if(logintype=="grlogin"){
                                         isExistUser(username);
+                                    }else{
+                                        yesAut();
                                     }
-                                }else{
-                                    yesAut();
                                 }
                             });
                             //回车提交事件

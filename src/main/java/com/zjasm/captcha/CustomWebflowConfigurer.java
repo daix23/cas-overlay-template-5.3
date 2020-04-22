@@ -31,10 +31,12 @@ public class CustomWebflowConfigurer extends DefaultLoginWebflowConfigurer {
             final ViewState state = getState(flow, CasWebflowConstants.STATE_ID_VIEW_LOGIN_FORM, ViewState.class);
             final BinderConfiguration cfg = getViewStateBinderConfiguration(state);
             cfg.addBinding(new BinderConfiguration.Binding("rememberMe", null, false));
-            cfg.addBinding(new BinderConfiguration.Binding("captcha", null, true));
+            cfg.addBinding(new BinderConfiguration.Binding("captcha", null, false));
             cfg.addBinding(new BinderConfiguration.Binding("orgcode", null, false));
             cfg.addBinding(new BinderConfiguration.Binding("devcoding", null, false));
             cfg.addBinding(new BinderConfiguration.Binding("logintype", null, false));
+            cfg.addBinding(new BinderConfiguration.Binding("hidTicket", null, false));
+            cfg.addBinding(new BinderConfiguration.Binding("hidLogintype", null, false));
 //        }
 
 

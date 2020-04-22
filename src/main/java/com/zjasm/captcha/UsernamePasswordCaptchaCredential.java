@@ -50,4 +50,24 @@ public class UsernamePasswordCaptchaCredential extends RememberMeUsernamePasswor
     public void setLogintype(String logintype) {
         this.logintype = logintype;
     }
+
+    private String hidTicket;
+
+    private String hidLogintype;
+
+    public String getHidTicket() {
+        return hidTicket;
+    }
+
+    public void setHidTicket(String hidTicket) {
+        this.hidTicket = hidTicket;
+    }
+
+    public String getHidLogintype() {
+        return hidLogintype;
+    }
+
+    public void setHidLogintype(String hidLogintype) {
+        this.hidLogintype = hidLogintype;
+    }
 }

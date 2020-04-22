@@ -251,13 +251,13 @@
                             initZTree();
 
                             //当勾上“记住我”时保存cookie，否则清空
-                            $("#rememberMe").click(function(){ //获取a标签对象, 为a标签绑定单击事件;
+                            /*$("#rememberMe").click(function(){ //获取a标签对象, 为a标签绑定单击事件;
                                 if($('#rememberMe').is(':checked')) {
                                     setcookie();//不存在(hasClass()返回flase)   设置cookie
                                 }else{
                                     clrcookie(); // 存在 清除cookie,
                                 }
-                            });
+                            });*/
 
                             if ($.cookie('rememberMe') == "true") { //窗体加载时候  读取cookie中rememberme的值是否等于true
                                 $("#username").val($.cookie('username'));//设置组织名称,显示
@@ -276,6 +276,12 @@
                                 var password = $('#password').val();
                                 var flag = checkUsPw(username,password);
                                 if(flag){
+                                    //登录验证后时根据是否勾选设置cookie
+                                    if($('#rememberMe').is(':checked')) {
+                                        setcookie();//不存在(hasClass()返回flase)   设置cookie
+                                    }else{
+                                        clrcookie(); // 存在 清除cookie,
+                                    }
                                     if(logintype=="grlogin"){
                                         isExistUser(username);
                                     }else{
